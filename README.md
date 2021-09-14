@@ -1,6 +1,6 @@
 # DataEnvelopmentAnalysis.py
 
-<!-- ![DataEnvelopmentAnalysis logo](docs/src/assets/wordmark.svg "DataEnvelopmentAnalysis logo") -->
+![DataEnvelopmentAnalysis logo](assets/logo/dea-py-logo.png "DataEnvelopmentAnalysis logo")
 
 <!-- | Documentation | Build Status      | Coverage    | Zenodo      |
 |:-------------:|:-----------------:|:-----------:|:-----------:|
