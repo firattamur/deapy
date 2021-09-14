@@ -48,4 +48,4 @@ pip install dea-py
 
 ## Authors
 
-DataEnvelopmentAnalysis.py is being developed by [Firat Tamur](https://github.com/firattamur)
+DataEnvelopmentAnalysis.py is being developed by [firattamur](https://github.com/firattamur)
