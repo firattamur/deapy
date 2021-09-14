@@ -55,38 +55,86 @@ pip install dea-py
 
 ### Technical Efficiency DEA Models:
 
+- [X] Radial Input and Output Oriented Model
 
-- [X] Radial input and output oriented model
-- [ ] Directional distance function model
-- [X] Additive models: 
+```python
+radio_dea = RadialDEA()
+
+X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
+
+radio_dea = RadialDEA(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+radio_dea.fit(X, Y)
+radio_dea.dea()
+radio_dea.pprint()
+
+```
+
+- [ ] Directional Distance Function Model
+- [X] Additive Models: 
+
+	```python
+	X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+	Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
+	```
+
 	* Weighted Additive Model
+
+	```python
+	    additive_dea = AdditiveDEA()
+	```
+
  	* Measure of Inefficiency Proportions Model(MIP)
- 	* Normalized Weighted Additive Model
- 	* Range Adjusted Measure Model(RAM)
+
+	```python
+	    additive_dea = AdditiveDEA(model=AdditiveModels.MIP)
+	```
+
+ 	* Normalized Weighted Additive Model (NORM)
+
+	```python
+	    additive_dea = AdditiveDEA(model=AdditiveModels.NORM)
+	```
+
+ 	* Range Adjusted Measure Model (RAM)
+
+	```python
+	    additive_dea = AdditiveDEA(model=AdditiveModels.RAM)
+	```
+
  	* Bounded Adjusted Measure Model (BAM)
-- [ ] Generalized distance function model
-- [ ] Russell graph and oriented model
-- [ ] Enhanced Russell Graph Slack Based Measure
-- [ ] Modified directional distance function
-- [ ] Hölder distance function
-- [ ] Reverse directional distance function
+
+	```python
+	    additive_dea = AdditiveDEA(model=AdditiveModels.BAM)
+	```
+	
+	```python
+	 additive_dea.fit(X, Y)
+	 additive_dea.dea()
+	 additive_dea.pprint()
+	```
+
+- [ ] Generalized Distance Function Model
+- [ ] Russell Graph and Oriented Model
+- [ ] Enhanced Russell Graph Slack Based Measure Model
+- [ ] Modified Directional Distance function Model
+- [ ] Hölder Distance Function Model
+- [ ] Reverse Directional Distance Function Model
 
 <hr>
 
 ### Economic Efficiency DEA Models:
 
-
-- [ ] Cost model
-- [ ] Revenue model
-- [ ] Profit model
-- [ ] Profitability model
+- [ ] Cost Model
+- [ ] Revenue Model
+- [ ] Profit Model
+- [ ] Profitability Model
 
 <hr>
 
 ### Productivity Change DEA Models:
 
-
-- [ ] Mamlmquist index.
+- [ ] Mamlmquist Index Model.
 
 <hr>
 
