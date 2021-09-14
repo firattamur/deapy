@@ -189,7 +189,7 @@ class TechnicalDEAUtils:
             rhoX, rhoY = TechnicalDEAUtils.getOnesAdditiveModelWeights(X=X, Y=Y, orient=orient)
         elif model == AdditiveModels.MIP:
             rhoX, rhoY = TechnicalDEAUtils.getMIPAdditiveModelWeights(X=X, Y=Y, orient=orient)
-        elif model == AdditiveModels.Normalized:
+        elif model == AdditiveModels.NORM:
             rhoX, rhoY = TechnicalDEAUtils.getNormalizedAdditiveModelWeights(X=X, Y=Y, orient=orient)
         elif model == AdditiveModels.RAM:
             rhoX, rhoY = TechnicalDEAUtils.getRAMAdditiveModelWeights(X=X, Y=Y, orient=orient)
