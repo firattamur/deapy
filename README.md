@@ -36,7 +36,7 @@
 
 A Python wrapper for [DataEnvelopmentAnalysis.jl](https://github.com/javierbarbero/DataEnvelopmentAnalysis.jl) library.
 
-* Python `3.8.1` and above on Linux, macOS, and Windows.
+* Python `3.8.1` and above on Linux, macOS, and Windows
 
 * [Pyomo](https://github.com/Pyomo/pyomo) LP modeling library
 
@@ -56,30 +56,30 @@ pip install dea-py
 ### Technical Efficiency DEA Models:
 
 
-- [X] Radial input and output oriented model.
-- [ ] Directional distance function model.
+- [X] Radial input and output oriented model
+- [ ] Directional distance function model
 - [X] Additive models: 
-	* Weighted Additive Model,
- 	* Measure of Inefficiency Proportions (MIP),
- 	* Normalized Weighted Additive Model,
- 	* Range Adjusted Measure (RAM),
- 	* Bounded Adjusted Measure (BAM).
-- [ ] Generalized distance function model.
-- [ ] Russell graph and oriented model.
-- [ ] Enhanced Russell Graph Slack Based Measure.
-- [ ] Modified directional distance function.
-- [ ] Hölder distance function.
-- [ ] Reverse directional distance function.
+	* Weighted Additive Model
+ 	* Measure of Inefficiency Proportions Model(MIP)
+ 	* Normalized Weighted Additive Model
+ 	* Range Adjusted Measure Model(RAM)
+ 	* Bounded Adjusted Measure Model (BAM)
+- [ ] Generalized distance function model
+- [ ] Russell graph and oriented model
+- [ ] Enhanced Russell Graph Slack Based Measure
+- [ ] Modified directional distance function
+- [ ] Hölder distance function
+- [ ] Reverse directional distance function
 
 <hr>
 
 ### Economic Efficiency DEA Models:
 
 
-- [ ] Cost model.
-- [ ] Revenue model.
-- [ ] Profit model.
-- [ ] Profitability model.
+- [ ] Cost model
+- [ ] Revenue model
+- [ ] Profit model
+- [ ] Profitability model
 
 <hr>
 
