@@ -1,4 +1,30 @@
-# DataEnvelopmentAnalysis.py
+<h3 align="center">
+	dea-py
+</h3>
+
+<!-- badges -->
+<p align="center">
+
+<!-- language -->
+<img src="https://img.shields.io/badge/Python-3.8.1-success" alt="Python: 3.8.1">
+<img src="https://img.shields.io/badge/Pyomo-6.1.2-yellow" alt="Pyomo: 6.1.2">
+<img src="https://img.shields.io/badge/-GLPK-blue" alt="GLPK">
+<img src="https://img.shields.io/badge/-IPOPT-blue" alt="Ipopt">
+  
+  
+<!-- inprogress or completed -->
+<!-- <img src="https://img.shields.io/badge/-completed-green" alt="completed"> -->
+	
+<!-- inprogress or completed -->
+<img src="https://img.shields.io/badge/-in%20progress-red" alt="in progress">
+	
+<!-- licence -->
+<img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="License: MIT">
+	
+<!-- week of year -->
+<!-- <img src="https://img.shields.io/badge/week-30-green" alt="in progress"> -->
+
+</p>
 
 ![DataEnvelopmentAnalysis logo](assets/logo/dea-py-logo.png "DataEnvelopmentAnalysis logo")
 
@@ -10,9 +36,9 @@ A Python wrapper for [DataEnvelopmentAnalysis.jl](https://github.com/javierbarbe
 
 * Python `3.8.1` and above on Linux, macOS, and Windows.
 
-* [Pyomo](https://github.com/Pyomo/pyomo) lp modeling library
+* [Pyomo](https://github.com/Pyomo/pyomo) LP modeling library
 
-* [GLPK](http://www.gnu.org/software/glpk/) and [Ipopt](https://coin-or.github.io/Ipopt/) lp solvers
+* [GLPK](http://www.gnu.org/software/glpk/) and [IPOPT](https://coin-or.github.io/Ipopt/) LP solvers
 
 ## Installation
 
