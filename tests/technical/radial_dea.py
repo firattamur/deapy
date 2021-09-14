@@ -298,35 +298,43 @@ class TestRadialDea(unittest.TestCase):
                                                 ], dtype=np.float64)
 
     def test_type(self):
-        for model in self.all_models.keys():
-            self.assertEqual(type(self.all_models[model]), self.all_models_type[model])
+
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertEqual(type(self.all_models[model]), self.all_models_type[model])
 
     def test_nobs(self):
-        for model in self.all_models.keys():
-            self.assertEqual(self.all_models[model].nobs(), self.all_models_nobs[model])
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertEqual(self.all_models[model].nobs(), self.all_models_nobs[model])
 
     def test_ninputs(self):
-        for model in self.all_models.keys():
-            self.assertEqual(self.all_models[model].ninputs(), self.all_models_inputs[model])
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertEqual(self.all_models[model].ninputs(), self.all_models_inputs[model])
 
     def test_noutputs(self):
-        for model in self.all_models.keys():
-            self.assertEqual(self.all_models[model].noutputs(), self.all_models_noutputs[model])
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertEqual(self.all_models[model].noutputs(), self.all_models_noutputs[model])
 
     def test_efficiency(self):
-        for model in self.all_models.keys():
-            self.assertTrue(np.allclose(self.all_models[model].efficiency(), self.all_models_efficiency[model],
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertTrue(np.allclose(self.all_models[model].efficiency(), self.all_models_efficiency[model],
                                         atol=1e-14))
 
     def test_slacks_X(self):
-        for model in self.all_models.keys():
-            self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.X), self.all_models_slacks_X[model],
-                                        atol=1e-14))
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.X), self.all_models_slacks_X[model],
+                                        atol=1e-12))
 
     def test_slacks_Y(self):
-        for model in self.all_models.keys():
-            self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.Y), self.all_models_slacks_Y[model],
-                                        atol=1e-14))
+        for i, model in enumerate(self.all_models.keys()):
+            with self.subTest(i=i):
+                self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.Y), self.all_models_slacks_Y[model],
+                                        atol=1e-12))
 
     # def test_peers_matrix(self):
     #     for model in self.all_models.keys():

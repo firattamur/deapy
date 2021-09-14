@@ -130,7 +130,7 @@ class RadialDEA(AbstractTechnicalDEA):
                         rhs = lp_model.eff * x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
-                if self.disposX == Dispos.Strong:
+                if self.disposY == Dispos.Strong:
 
                     for j in range(self.s):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
@@ -140,13 +140,13 @@ class RadialDEA(AbstractTechnicalDEA):
                 else:
 
                     for j in range(self.s):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
             else:
 
-                # input oriented
+                # output oriented
                 lp_model.obj = pyo.Objective(expr=lp_model.eff, sense=pyo.maximize)
 
                 # create list for constraints
@@ -167,7 +167,7 @@ class RadialDEA(AbstractTechnicalDEA):
                         rhs = x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
-                if self.disposX == Dispos.Strong:
+                if self.disposY == Dispos.Strong:
 
                     for j in range(self.s):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
@@ -177,7 +177,7 @@ class RadialDEA(AbstractTechnicalDEA):
                 else:
 
                     for j in range(self.s):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
@@ -185,11 +185,12 @@ class RadialDEA(AbstractTechnicalDEA):
             if self.rts == RTS.CSR:
                 pass  # no constraint to add for constant returns to scale
             else:
-                lhs = sum(lp_model.lambdas)
+                lhs = sum(lp_model.lambdas[j] for j in lp_model.n)
                 rhs = 1
-                lp_model.constraints.add(expr=(lhs == rhs))
+                lp_model.constraints.add(expr=(lhs == 1))
 
-            results, lp_model = PyomoUtils.solve_pyomo_model(model=lp_model, optimizer=self.optimizer)
+            opt = pyo.SolverFactory("glpk")
+            results = opt.solve(lp_model)
 
             if results.solver.termination_condition != pyo.TerminationCondition.optimal and \
                results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
