@@ -13,12 +13,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
 from src.core.symbols import *
 from src.core.utils import PyomoUtils
-from src.technical.additive_dea import AdditiveDEA
+from src.technical.dea_additive import DEAAdditive
 from src.optimizer.dea_optimizer import DEAOptimizer
-from src.core.abstract_technical_dea import AbstractTechnicalDEA
+from src.core.abstract_dea_technical import AbstractDEATechnical
 
 
-class RadialDEA(AbstractTechnicalDEA):
+class DEARadial(AbstractDEATechnical):
 
     def __init__(self,
                  orient: Orient = Orient.Input,
@@ -49,17 +49,10 @@ class RadialDEA(AbstractTechnicalDEA):
         self.disposY = disposY
         self.optimizer = optimizer
 
-        self.names = None
-        self.slacksX = None
-        self.slacksY = None
-        self.lambdas = None
-        self.Xtarget = None
-        self.Ytarget = None
-
-        super().__init__()
+        super(AbstractDEATechnical).__init__()
 
     def dea(self, Xref: NDArray = None, Yref: NDArray = None, ):
-        super(RadialDEA, self).dea()
+        super(DEARadial, self).dea()
 
         # check if fit called before
         if self.X is None or self.Y is None:
@@ -228,7 +221,7 @@ class RadialDEA(AbstractTechnicalDEA):
             else:
                 rhoY = np.zeros(self.Y.shape)
 
-            slackModel = AdditiveDEA(rts=self.rts, optimizer=self.optimizer)
+            slackModel = DEAAdditive(rts=self.rts, optimizer=self.optimizer)
             slackModel.fit(X=self.Xtarget, Y=self.Ytarget)
             slackModel.dea(Xref=Xref, Yref=Yref, rhoX=rhoX, rhoY=rhoY)
 
@@ -245,28 +238,28 @@ class RadialDEA(AbstractTechnicalDEA):
             self.slackY = None
 
     def fit(self, X: NDArray, Y: NDArray) -> None:
-        super(RadialDEA, self).fit(X, Y)
+        super(DEARadial, self).fit(X, Y)
 
     def dmunames(self) -> List[str]:
-        return super(RadialDEA, self).dmunames()
+        return super(DEARadial, self).dmunames()
 
     def nobs(self) -> int:
-        return super(RadialDEA, self).nobs()
+        return super(DEARadial, self).nobs()
 
     def ninputs(self) -> int:
-        return super(RadialDEA, self).ninputs()
+        return super(DEARadial, self).ninputs()
 
     def noutputs(self) -> int:
-        return super(RadialDEA, self).noutputs()
+        return super(DEARadial, self).noutputs()
 
     def efficiency(self) -> NDArray:
-        return super(RadialDEA, self).efficiency()
+        return super(DEARadial, self).efficiency()
 
     def slacks(self, slack: Slack) -> NDArray:
-        return super(RadialDEA, self).slacks(slack)
+        return super(DEARadial, self).slacks(slack)
 
     def targets(self, target: Target) -> NDArray:
-        return super(RadialDEA, self).targets(target)
+        return super(DEARadial, self).targets(target)
 
     def pprint(self):
 
@@ -307,7 +300,7 @@ if __name__ == '__main__':
     X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
-    input_crs_radial_dea = RadialDEA(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    input_crs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
     input_crs_radial_dea.fit(X, Y)
     input_crs_radial_dea.dea()
     input_crs_radial_dea.pprint()

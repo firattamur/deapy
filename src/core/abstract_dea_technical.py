@@ -2,9 +2,10 @@ from abc import abstractmethod
 from src.core.symbols import *
 from src.core.abstract_dea import AbstractDEA
 from nptyping import NDArray
+import numpy as np
 
 
-class AbstractTechnicalDEA(AbstractDEA):
+class AbstractDEATechnical(AbstractDEA):
     """
     An abstract class for technical dea models.
     """
@@ -14,11 +15,13 @@ class AbstractTechnicalDEA(AbstractDEA):
         self.slackX = None
         self.slackY = None
 
-        super().__init__()
+        super(AbstractDEA).__init__()
 
     @abstractmethod
     def efficiency(self) -> NDArray:
         """
+        >>> from src.technical.dea_radial import DEARadial
+
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
 
         >>> X.shape
@@ -27,7 +30,7 @@ class AbstractTechnicalDEA(AbstractDEA):
 
         >>> Y.shape
         (11, 1)
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.efficiency()
 

@@ -26,7 +26,7 @@
 
 </p>
 
-![DataEnvelopmentAnalysis logo](assets/logo/dea-py-logo.png "DataEnvelopmentAnalysis logo")
+![DataEnvelopmentAnalysis logo](assets/logo/logo.png "DataEnvelopmentAnalysis logo")
 
 <!-- | Documentation | Build Status      | Coverage    | Zenodo      |
 |:-------------:|:-----------------:|:-----------:|:-----------:|

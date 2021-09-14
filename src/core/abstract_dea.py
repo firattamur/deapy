@@ -17,6 +17,13 @@ class AbstractDEA(ABC):
         self.m = None
         self.s = None
 
+        self.names = None
+        self.slacksX = None
+        self.slacksY = None
+        self.lambdas = None
+        self.Xtarget = None
+        self.Ytarget = None
+
         super().__init__()
 
     @abstractmethod
@@ -34,6 +41,7 @@ class AbstractDEA(ABC):
 
         Returns
         -------
+        >>> from src.technical.dea_radial import DEARadial
 
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
 
@@ -43,7 +51,7 @@ class AbstractDEA(ABC):
 
         >>> Y.shape
         (11, 1)
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.fit(X=X, Y=Y)
 
@@ -73,6 +81,7 @@ class AbstractDEA(ABC):
         Returns
         -------
         self.n
+        >>> from src.technical.dea_radial import DEARadial
 
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
 
@@ -82,7 +91,7 @@ class AbstractDEA(ABC):
 
         >>> Y.shape
         (11, 1)
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.fit(inputs=X, outputs=Y)
 
@@ -99,6 +108,7 @@ class AbstractDEA(ABC):
         Returns
         -------
         self.m
+        >>> from src.technical.dea_radial import DEARadial
 
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
 
@@ -108,7 +118,7 @@ class AbstractDEA(ABC):
 
         >>> Y.shape
         (11, 1)
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.fit(inputs=X, outputs=Y)
 
@@ -124,6 +134,7 @@ class AbstractDEA(ABC):
         Returns
         -------
         self.s
+        >>> from src.technical.dea_radial import DEARadial
 
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
 
@@ -133,7 +144,7 @@ class AbstractDEA(ABC):
 
         >>> Y.shape
         (11, 1)
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.fit(inputs=X, outputs=Y)
 
@@ -150,6 +161,7 @@ class AbstractDEA(ABC):
         Returns
         -------
         self.names
+        >>> from src.technical.dea_radial import DEARadial
 
         >>> X = np.array([[5, 13], [16, 12], [16, 26], [17, 15]])
 
@@ -161,7 +173,7 @@ class AbstractDEA(ABC):
         (4, 1)
         >>> dmunames = ["A", "B", "C", "D"]
 
-        >>> model = RadialDEA()
+        >>> model = DEARadial()
 
         >>> model.fit(inputs=X, outputs=Y, names=dmunames)
 

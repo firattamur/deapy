@@ -1,17 +1,20 @@
-import numpy as np
+import warnings
 from tqdm import tqdm
+
+import numpy as np
 from scipy import sparse
-from typing import List
 import pyomo.environ as pyo
-from src.core.utils import PyomoUtils, TechnicalDEAUtils
+
+from typing import List
 from nptyping import NDArray
+
 from src.core.symbols import *
 from src.optimizer.dea_optimizer import DEAOptimizer
-from src.core.abstract_technical_dea import AbstractTechnicalDEA
-import warnings
+from src.core.utils import PyomoUtils, TechnicalDEAUtils
+from src.core.abstract_dea_technical import AbstractDEATechnical
 
 
-class AdditiveDEA(AbstractTechnicalDEA):
+class DEAAdditive(AbstractDEATechnical):
 
     def __init__(self,
                  model: AdditiveModels = AdditiveModels.Ones,
@@ -51,12 +54,12 @@ class AdditiveDEA(AbstractTechnicalDEA):
         self.Xtarget = None
         self.Ytarget = None
 
-        super().__init__()
+        super(AbstractDEATechnical).__init__()
 
     def dea(self,
             Xref: NDArray = None, Yref: NDArray = None,
             rhoX : NDArray = None, rhoY : NDArray = None):
-        super(AdditiveDEA, self).dea()
+        super(DEAAdditive, self).dea()
 
         # check if fit called before
         if self.X is None or self.Y is None:
@@ -169,12 +172,11 @@ class AdditiveDEA(AbstractTechnicalDEA):
 
                 lp_model.constraints.add(expr=(lhs == rhs))
 
-
             # add return to scale constraints
 
             if self.rts == RTS.CSR:
 
-                # add constaints for BAM CSR model
+                # add constants for BAM CSR model
                 if self.model == AdditiveModels.BAM:
                     for j in range(1, self.m):
                         lhs = sum(Xref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.n)
@@ -186,7 +188,7 @@ class AdditiveDEA(AbstractTechnicalDEA):
                         lhs = sum(Yref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.n)
                         rhs = maxYref[j - 1]
 
-                        lp_model.constraints.add(expr=(lsh <= rhs))
+                        lp_model.constraints.add(expr=(lhs <= rhs))
 
             else:
                 lhs = sum(lp_model.lambdas[j] for j in lp_model.n)
@@ -235,28 +237,28 @@ class AdditiveDEA(AbstractTechnicalDEA):
         self.Ytarget = self.Y - slackY
 
     def fit(self, X: NDArray, Y: NDArray) -> None:
-        super(AdditiveDEA, self).fit(X, Y)
+        super(DEAAdditive, self).fit(X, Y)
 
     def dmunames(self) -> List[str]:
-        return super(AdditiveDEA, self).dmunames()
+        return super(DEAAdditive, self).dmunames()
 
     def nobs(self) -> int:
-        return super(AdditiveDEA, self).nobs()
+        return super(DEAAdditive, self).nobs()
 
     def ninputs(self) -> int:
-        return super(AdditiveDEA, self).ninputs()
+        return super(DEAAdditive, self).ninputs()
 
     def noutputs(self) -> int:
-        return super(AdditiveDEA, self).noutputs()
+        return super(DEAAdditive, self).noutputs()
 
     def efficiency(self) -> NDArray:
-        return super(AdditiveDEA, self).efficiency()
+        return super(DEAAdditive, self).efficiency()
 
     def slacks(self, slack: Slack) -> NDArray:
-        return super(AdditiveDEA, self).slacks(slack)
+        return super(DEAAdditive, self).slacks(slack)
 
     def targets(self, target: Target) -> NDArray:
-        return super(AdditiveDEA, self).targets(target)
+        return super(DEAAdditive, self).targets(target)
 
     def pprint(self):
 
@@ -298,7 +300,7 @@ if __name__ == '__main__':
     X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
-    additive_dea = AdditiveDEA(model=AdditiveModels.MIP)
+    additive_dea = DEAAdditive(model=AdditiveModels.MIP)
     additive_dea.fit(X, Y)
     additive_dea.dea()
 

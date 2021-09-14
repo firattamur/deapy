@@ -1,13 +1,14 @@
 import os
 import sys
 import unittest
+
 import numpy as np
 
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from src.technical.radial_dea import RadialDEA
 from src.core.symbols import *
+from src.technical.dea_radial import DEARadial
 
 
 class TestRadialDea(unittest.TestCase):
@@ -62,12 +63,12 @@ class TestRadialDea(unittest.TestCase):
     # ------------------------------------------------------------
 
     # input oriented crs
-    input_crs_radial_dea = RadialDEA(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    input_crs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
     input_crs_radial_dea.fit(X, Y)
     input_crs_radial_dea.dea()
 
     all_models["input_csr"] = input_crs_radial_dea
-    all_models_type["input_csr"] = RadialDEA
+    all_models_type["input_csr"] = DEARadial
     all_models_nobs["input_csr"] = 11
     all_models_inputs["input_csr"] = 2
     all_models_noutputs["input_csr"] = 1
@@ -119,12 +120,12 @@ class TestRadialDea(unittest.TestCase):
     # ------------------------------------------------------------
 
     # output oriented crs
-    output_crs_radial_dea = RadialDEA(orient=Orient.Output, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    output_crs_radial_dea = DEARadial(orient=Orient.Output, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
     output_crs_radial_dea.fit(X, Y)
     output_crs_radial_dea.dea()
 
     all_models["output_crs"] = output_crs_radial_dea
-    all_models_type["output_crs"] = RadialDEA
+    all_models_type["output_crs"] = DEARadial
     all_models_nobs["output_crs"] = 11
     all_models_inputs["output_crs"] = 2
     all_models_noutputs["output_crs"] = 1
@@ -176,12 +177,12 @@ class TestRadialDea(unittest.TestCase):
     # ------------------------------------------------------------
 
     # input oriented vrs
-    input_vrs_radial_dea = RadialDEA(orient=Orient.Input, rts=RTS.VRS, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    input_vrs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.VRS, disposX=Dispos.Strong, disposY=Dispos.Strong)
     input_vrs_radial_dea.fit(X, Y)
     input_vrs_radial_dea.dea()
 
     all_models["input_vrs"] = input_vrs_radial_dea
-    all_models_type["input_vrs"] = RadialDEA
+    all_models_type["input_vrs"] = DEARadial
     all_models_nobs["input_vrs"] = 11
     all_models_inputs["input_vrs"] = 2
     all_models_noutputs["input_vrs"] = 1
@@ -245,12 +246,12 @@ class TestRadialDea(unittest.TestCase):
     # ------------------------------------------------------------
 
     # output oriented vrs
-    output_vrs_radial_dea = RadialDEA(orient=Orient.Output, rts=RTS.VRS, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    output_vrs_radial_dea = DEARadial(orient=Orient.Output, rts=RTS.VRS, disposX=Dispos.Strong, disposY=Dispos.Strong)
     output_vrs_radial_dea.fit(X, Y)
     output_vrs_radial_dea.dea()
 
     all_models["output_vrs"] = output_vrs_radial_dea
-    all_models_type["output_vrs"] = RadialDEA
+    all_models_type["output_vrs"] = DEARadial
     all_models_nobs["output_vrs"] = 11
     all_models_inputs["output_vrs"] = 2
     all_models_noutputs["output_vrs"] = 1
