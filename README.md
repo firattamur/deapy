@@ -83,7 +83,7 @@ pip install dea-py
 
 <hr>
 
-### Productivity Change Models:
+### Productivity Change DEA Models:
 
 
 - [ ] Mamlmquist index.
