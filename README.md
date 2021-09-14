@@ -32,6 +32,8 @@
 |:-------------:|:-----------------:|:-----------:|:-----------:|
 | [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] |  [![][githubci-img]][githubci-url] | [![][codecov-img]][codecov-url] | [![][zenodo-img]][zenodo-url] | -->
 
+<hr>
+
 A Python wrapper for [DataEnvelopmentAnalysis.jl](https://github.com/javierbarbero/DataEnvelopmentAnalysis.jl) library.
 
 * Python `3.8.1` and above on Linux, macOS, and Windows.
@@ -40,6 +42,8 @@ A Python wrapper for [DataEnvelopmentAnalysis.jl](https://github.com/javierbarbe
 
 * [GLPK](http://www.gnu.org/software/glpk/) and [IPOPT](https://coin-or.github.io/Ipopt/) LP solvers
 
+<hr>
+
 ## Installation
 
 The package can be installed with the Python Package Index (PyPI):
@@ -47,13 +51,19 @@ The package can be installed with the Python Package Index (PyPI):
 pip install dea-py
 ```
 
-## Available models
+<hr>
 
-**Technical efficiency DEA models**
+### Technical Efficiency DEA Models:
+
 
 - [X] Radial input and output oriented model.
 - [ ] Directional distance function model.
-- [X] Additive models: weighted additive model, measure of inefficiency proportions (MIP), normalized weighted additive model, range adjusted measure (RAM), bounded adjusted measure (BAM).
+- [X] Additive models: 
+	* Weighted Additive Model,
+ 	* Measure of Inefficiency Proportions (MIP),
+ 	* Normalized Weighted Additive Model,
+ 	* Range Adjusted Measure (RAM),
+ 	* Bounded Adjusted Measure (BAM).
 - [ ] Generalized distance function model.
 - [ ] Russell graph and oriented model.
 - [ ] Enhanced Russell Graph Slack Based Measure.
@@ -61,16 +71,24 @@ pip install dea-py
 - [ ] Hölder distance function.
 - [ ] Reverse directional distance function.
 
-**Economic efficiency DEA models**
+<hr>
+
+### Economic Efficiency DEA Models:
+
 
 - [ ] Cost model.
 - [ ] Revenue model.
 - [ ] Profit model.
 - [ ] Profitability model.
 
-**Productivity change models**
+<hr>
+
+### Productivity Change Models:
+
 
 - [ ] Mamlmquist index.
+
+<hr>
 
 ## Authors
 
