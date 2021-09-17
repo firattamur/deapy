@@ -11,9 +11,12 @@ class AbstractDEATechnical(AbstractDEA):
     """
 
     def __init__(self):
-        self.eff = None
+
         self.slackX = None
         self.slackY = None
+        self.lambdas = None
+        self.Xtarget = None
+        self.Ytarget = None
 
         super(AbstractDEA).__init__()
 
@@ -32,9 +35,25 @@ class AbstractDEATechnical(AbstractDEA):
         (11, 1)
         >>> model = DEARadial()
 
-        >>> model.efficiency()
+        >>> model.fit(X=X, Y=Y)
 
-        >>> model.nobs()
+        >>> result = np.array([     \
+                   [1.0000000000],  \
+                   [0.6222896791],  \
+                   [0.8198562444],  \
+                   [1.0000000000],  \
+                   [0.3103709311],  \
+                   [0.5555555556],  \
+                   [1.0000000000],  \
+                   [0.7576690896],  \
+                   [0.8201058201],  \
+                   [0.4905660377],  \
+                   [1.0000000000]   \
+                ])
+
+        >>> np.allclose(model.efficiency(), result, atol=1e-10)
+        True
+        >>> model.dmu()
         11
 
         Returns

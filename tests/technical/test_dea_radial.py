@@ -14,29 +14,6 @@ from src.technical.dea_radial import DEARadial
 class TestRadialDea(unittest.TestCase):
     """
     Tests for RadialDEA model.
-        Tests Overview:
-            -> Models:
-                -> Input Oriented CRS
-                -> Output Oriented CRS
-                -> Input Oriented VRS
-                -> Output Oriented VRS
-                -> No Slack
-                -> Test Xref and Yref with Initial values
-                -> Weak Disposability
-                -> Strong Disposability
-                -> DMU Names
-                -> Progress Meter
-
-            -> Functions
-                -> test type
-                -> test nobs
-                -> test inputs
-                -> test noutputs
-                -> test efficiency
-                -> test convert
-                -> test slacks
-                -> test peers matrix
-
     """
 
     # test data
@@ -209,7 +186,7 @@ class TestRadialDea(unittest.TestCase):
                                                     [0.000000000,  0],
                                                     [0.000000000,  0],
                                                     [0.000000000,  0],
-                                                    [0.000000000, 0],
+                                                    [0.000000000,  0],
                                                     [0.000000000,  4]
                                                 ], dtype=np.float64)
 
@@ -305,33 +282,39 @@ class TestRadialDea(unittest.TestCase):
                 self.assertEqual(type(self.all_models[model]), self.all_models_type[model])
 
     def test_nobs(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
-                self.assertEqual(self.all_models[model].nobs(), self.all_models_nobs[model])
+                self.assertEqual(self.all_models[model].dmu(), self.all_models_nobs[model])
 
     def test_ninputs(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
-                self.assertEqual(self.all_models[model].ninputs(), self.all_models_inputs[model])
+                self.assertEqual(self.all_models[model].ninp(), self.all_models_inputs[model])
 
     def test_noutputs(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
-                self.assertEqual(self.all_models[model].noutputs(), self.all_models_noutputs[model])
+                self.assertEqual(self.all_models[model].nout(), self.all_models_noutputs[model])
 
     def test_efficiency(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
                 self.assertTrue(np.allclose(self.all_models[model].efficiency(), self.all_models_efficiency[model],
                                         atol=1e-14))
 
     def test_slacks_X(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
                 self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.X), self.all_models_slacks_X[model],
                                         atol=1e-12))
 
     def test_slacks_Y(self):
+
         for i, model in enumerate(self.all_models.keys()):
             with self.subTest(i=i):
                 self.assertTrue(np.allclose(self.all_models[model].slacks(slack=Slack.Y), self.all_models_slacks_Y[model],

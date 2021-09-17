@@ -13,16 +13,12 @@ class AbstractDEA(ABC):
     def __init__(self):
         self.X = None
         self.Y = None
-        self.n = None
-        self.m = None
-        self.s = None
+        self.n_dmu = None
+        self.n_inp = None
+        self.n_out = None
 
         self.names = None
-        self.slacksX = None
-        self.slacksY = None
-        self.lambdas = None
-        self.Xtarget = None
-        self.Ytarget = None
+        self.eff = None
 
         super().__init__()
 
@@ -55,27 +51,29 @@ class AbstractDEA(ABC):
 
         >>> model.fit(X=X, Y=Y)
 
-        >>> model.nobs()
+        >>> model.ndmu()
         11
-        >>> model.ninputs()
+        >>> model.ninp()
         2
-        >>> model.noutputs()
+        >>> model.nout()
         1
 
         """
 
-        nx, self.m = X.shape
-        ny, self.s = Y.shape
+        nx, self.n_inp = X.shape
+        ny, self.n_out = Y.shape
 
         if nx != ny:
             raise ValueError(f"number of rows in X and Y {nx, ny} are not equal")
 
         self.X = X
         self.Y = Y
-        self.n = nx
+        self.n_dmu = nx
+
+        self.dea()
 
     @abstractmethod
-    def nobs(self) -> int:
+    def ndmu(self) -> int:
         """
         Return number of observations in DEA model.
         Returns
@@ -95,14 +93,14 @@ class AbstractDEA(ABC):
 
         >>> model.fit(X=X, Y=Y)
 
-        >>> model.nobs()
+        >>> model.ndmu()
         11
 
         """
-        return self.n
+        return self.n_dmu
 
     @abstractmethod
-    def ninputs(self) -> int:
+    def ninp(self) -> int:
         """
         Return number of inputs in DEA model.
         Returns
@@ -122,13 +120,13 @@ class AbstractDEA(ABC):
 
         >>> model.fit(X=X, Y=Y)
 
-        >>> model.ninputs()
+        >>> model.ninp()
         2
         """
-        return self.m
+        return self.n_inp
 
     @abstractmethod
-    def noutputs(self) -> int:
+    def nout(self) -> int:
         """
         Return number of outpus in DEA model.
         Returns
@@ -148,11 +146,11 @@ class AbstractDEA(ABC):
 
         >>> model.fit(X=X, Y=Y)
 
-        >>> model.noutputs()
+        >>> model.nout()
         1
         """
 
-        return self.s
+        return self.n_out
 
     @abstractmethod
     def dmunames(self) -> List[str]:
@@ -202,19 +200,19 @@ class AbstractDEA(ABC):
 
             names_length = len(self.names)
 
-            if names_length == self.nobs():
+            if names_length == self.ndmu():
                 dmunames = self.names
 
-            elif names_length < self.nobs():
+            elif names_length < self.ndmu():
                 warnings.warn("Length of names lower than number of observations")
-                dmunames = self.names + [f"{i}" for i in range(1, self.nobs() - names_length + 1)]
+                dmunames = self.names + [f"{i}" for i in range(1, self.ndmu() - names_length + 1)]
 
             else:
                 warnings.warn("Length of names greater than number of observations")
-                dmunames = self.names[:self.nobs()]
+                dmunames = self.names[:self.ndmu()]
         else:
 
-            dmunames = [f"{i}" for i in range(self.nobs())]
+            dmunames = [f"{i}" for i in range(self.ndmu())]
 
         return dmunames
 

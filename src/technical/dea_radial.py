@@ -72,14 +72,14 @@ class DEARadial(AbstractDEATechnical):
         if nrefx != nrefy:
             raise ValueError(f"number of rows in Xref and Yref ({nrefx}, {nrefy}) are not equal!")
 
-        if self.m != mref:
-            raise ValueError(f"number of cols in X and Xref ({self.m}, {mref}) are not equal!")
+        if self.n_inp != mref:
+            raise ValueError(f"number of cols in X and Xref ({self.n_inp}, {mref}) are not equal!")
 
-        if self.s != sref:
-            raise ValueError(f"number of cols in Y and Yref ({self.s}, {sref}) are not equal!")
+        if self.n_out != sref:
+            raise ValueError(f"number of cols in Y and Yref ({self.n_out}, {sref}) are not equal!")
 
         # Compute efficiency for each DMU
-        n_dmu = self.nobs()
+        n_dmu = self.ndmu()
         nref_dmu = nrefx
 
         effi = np.zeros((n_dmu, 1))
@@ -112,28 +112,28 @@ class DEARadial(AbstractDEATechnical):
                 # inequality or equality restrictions based on disposability
                 if self.disposX == Dispos.Strong:
 
-                    for j in range(self.m):
+                    for j in range(self.n_inp):
                         lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * x0[j]
                         lp_model.constraints.add(expr=(lhs <= rhs))
 
                 else:
 
-                    for j in range(self.m):
+                    for j in range(self.n_inp):
                         lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
                 if self.disposY == Dispos.Strong:
 
-                    for j in range(self.s):
+                    for j in range(self.n_out):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = y0[j]
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
                 else:
 
-                    for j in range(self.s):
+                    for j in range(self.n_out):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
@@ -149,28 +149,28 @@ class DEARadial(AbstractDEATechnical):
                 # inequality or equality restrictions based on disposability
                 if self.disposX == Dispos.Strong:
 
-                    for j in range(self.m):
+                    for j in range(self.n_inp):
                         lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
                         rhs = x0[j]
                         lp_model.constraints.add(expr=(lhs <= rhs))
 
                 else:
 
-                    for j in range(self.m):
+                    for j in range(self.n_inp):
                         lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
                         rhs = x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
                 if self.disposY == Dispos.Strong:
 
-                    for j in range(self.s):
+                    for j in range(self.n_out):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * y0[j]
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
                 else:
 
-                    for j in range(self.s):
+                    for j in range(self.n_out):
                         lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
@@ -192,7 +192,7 @@ class DEARadial(AbstractDEATechnical):
 
             effi[i, :] = pyo.value(lp_model.eff)
 
-            for j in range(self.nobs()):
+            for j in range(self.ndmu()):
                 lambdaeff[i, j] = pyo.value(lp_model.lambdas[j+1])
 
         # save results to model
@@ -244,14 +244,14 @@ class DEARadial(AbstractDEATechnical):
     def dmunames(self) -> List[str]:
         return super(DEARadial, self).dmunames()
 
-    def nobs(self) -> int:
-        return super(DEARadial, self).nobs()
+    def ndmu(self) -> int:
+        return super(DEARadial, self).ndmu()
 
-    def ninputs(self) -> int:
-        return super(DEARadial, self).ninputs()
+    def ninp(self) -> int:
+        return super(DEARadial, self).ninp()
 
-    def noutputs(self) -> int:
-        return super(DEARadial, self).noutputs()
+    def nout(self) -> int:
+        return super(DEARadial, self).nout()
 
     def efficiency(self) -> NDArray:
         return super(DEARadial, self).efficiency()
@@ -265,9 +265,9 @@ class DEARadial(AbstractDEATechnical):
     def pprint(self):
 
         print("Radial DEA Model")
-        print(f"DMUs = {self.nobs()}", end="; ")
-        print(f"Inputs = {self.ninputs()}", end="; ")
-        print(f"Ouputs = {self.noutputs()}")
+        print(f"DMUs = {self.ndmu()}", end="; ")
+        print(f"Inputs = {self.ninp()}", end="; ")
+        print(f"Ouputs = {self.nout()}")
         print(f"Orientation = {self.orient.value}", end="; ")
         print(f"Returns to scale = {self.rts.value}")
 
@@ -281,9 +281,8 @@ class DEARadial(AbstractDEATechnical):
         cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in range(self.slackY.shape[1])]
         t = PrettyTable(cols)
 
-        for i in range(self.n):
-            row = [i + 1]
-            row.append(self.eff[i, 0])
+        for i in range(self.n_dmu):
+            row = [i + 1, self.eff[i, 0]]
 
             for sx in range(self.slackX.shape[1]):
                 row.append(self.slackX[i, sx])
@@ -303,5 +302,4 @@ if __name__ == '__main__':
 
     input_crs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
     input_crs_radial_dea.fit(X, Y)
-    input_crs_radial_dea.dea()
     input_crs_radial_dea.pprint()
