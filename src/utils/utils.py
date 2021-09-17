@@ -1,7 +1,7 @@
 import numpy as np
 import pyomo.environ as pyo
 from nptyping import NDArray
-from src.core.symbols import *
+from src.utils.symbols import *
 from src.optimizer.dea_optimizer import DEAOptimizer
 
 

@@ -2,7 +2,6 @@ import os
 import sys
 import warnings
 import numpy as np
-from tqdm import tqdm
 from typing import List
 from scipy import sparse
 import pyomo.environ as pyo
@@ -11,8 +10,8 @@ from nptyping import NDArray
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from src.core.symbols import *
-from src.core.utils import PyomoUtils
+from src.utils.symbols import *
+from src.utils.utils import PyomoUtils
 from src.technical.dea_additive import DEAAdditive
 from src.optimizer.dea_optimizer import DEAOptimizer
 from src.core.abstract_dea_technical import AbstractDEATechnical
@@ -21,6 +20,7 @@ from src.core.abstract_dea_technical import AbstractDEATechnical
 class DEARadial(AbstractDEATechnical):
 
     def __init__(self,
+                 names: List[str] = None,
                  orient: Orient = Orient.Input,
                  rts: RTS = RTS.CSR,
                  slack: bool = True,
@@ -48,6 +48,7 @@ class DEARadial(AbstractDEATechnical):
         self.disposX = disposX
         self.disposY = disposY
         self.optimizer = optimizer
+        self.names = names
 
         super(AbstractDEATechnical).__init__()
 

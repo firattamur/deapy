@@ -4,13 +4,14 @@ from tqdm import tqdm
 import numpy as np
 from scipy import sparse
 import pyomo.environ as pyo
+from prettytable import PrettyTable
 
 from typing import List
 from nptyping import NDArray
 
-from src.core.symbols import *
+from src.utils.symbols import *
 from src.optimizer.dea_optimizer import DEAOptimizer
-from src.core.utils import PyomoUtils, TechnicalDEAUtils
+from src.utils.utils import PyomoUtils, TechnicalDEAUtils
 from src.core.abstract_dea_technical import AbstractDEATechnical
 
 
@@ -58,7 +59,7 @@ class DEAAdditive(AbstractDEATechnical):
 
     def dea(self,
             Xref: NDArray = None, Yref: NDArray = None,
-            rhoX : NDArray = None, rhoY : NDArray = None):
+            rhoX: NDArray = None, rhoY: NDArray = None):
         super(DEAAdditive, self).dea()
 
         # check if fit called before
@@ -132,8 +133,8 @@ class DEAAdditive(AbstractDEATechnical):
             lp_model.s = pyo.RangeSet(1, self.s)
 
             # create variables for slackX, slackY and lambdas
-            lp_model.sX  = pyo.Var(lp_model.m, within=pyo.NonNegativeReals)
-            lp_model.sY  = pyo.Var(lp_model.s, within=pyo.NonNegativeReals)
+            lp_model.sX = pyo.Var(lp_model.m, within=pyo.NonNegativeReals)
+            lp_model.sY = pyo.Var(lp_model.s, within=pyo.NonNegativeReals)
             lp_model.lambdas = pyo.Var(lp_model.n, within=pyo.NonNegativeReals)
 
             if self.orient == Orient.Graph:
@@ -275,13 +276,12 @@ class DEAAdditive(AbstractDEATechnical):
         if self.disposY == Dispos.Weak:
             print(f"Weak disposibility of outputs")
 
-        from prettytable import PrettyTable
-        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in range(self.slackY.shape[1])]
+        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in
+                                                                                            range(self.slackY.shape[1])]
         t = PrettyTable(cols)
 
         for i in range(self.n):
-            row = [i + 1]
-            row.append(self.eff[i, 0])
+            row = [i + 1, self.eff[i, 0]]
 
             for sx in range(self.slackX.shape[1]):
                 row.append(self.slackX[i, sx])
@@ -294,10 +294,9 @@ class DEAAdditive(AbstractDEATechnical):
         print(t)
 
 
-
 if __name__ == '__main__':
-
-    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    X = np.array(
+        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
     additive_dea = DEAAdditive(model=AdditiveModels.MIP)

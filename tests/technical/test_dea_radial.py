@@ -7,7 +7,7 @@ import numpy as np
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from src.core.symbols import *
+from src.utils.symbols import *
 from src.technical.dea_radial import DEARadial
 
 

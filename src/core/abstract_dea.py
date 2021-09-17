@@ -93,7 +93,7 @@ class AbstractDEA(ABC):
         (11, 1)
         >>> model = DEARadial()
 
-        >>> model.fit(inputs=X, outputs=Y)
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.nobs()
         11
@@ -120,7 +120,7 @@ class AbstractDEA(ABC):
         (11, 1)
         >>> model = DEARadial()
 
-        >>> model.fit(inputs=X, outputs=Y)
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.ninputs()
         2
@@ -146,7 +146,7 @@ class AbstractDEA(ABC):
         (11, 1)
         >>> model = DEARadial()
 
-        >>> model.fit(inputs=X, outputs=Y)
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.noutputs()
         1
@@ -173,46 +173,50 @@ class AbstractDEA(ABC):
         (4, 1)
         >>> dmunames = ["A", "B", "C", "D"]
 
-        >>> model = DEARadial()
+        >>> model = DEARadial(names=dmunames)
 
-        >>> model.fit(inputs=X, outputs=Y, names=dmunames)
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.dmunames()
-        ["A", "B", "C", "D"]
+        ['A', 'B', 'C', 'D']
         >>> dmunames = ["A", "B", "C"]
 
-        >>> model.fit(inputs=X, outputs=Y, names=dmunames)
+        >>> model = DEARadial(names=dmunames)
+
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.dmunames()
-        ["A", "B", "C", "1"]
+        ['A', 'B', 'C', '1']
         >>> dmunames = ["A", "B", "C", "D", "E"]
 
-        >>> model.fit(inputs=X, outputs=Y, names=dmunames)
+        >>> model = DEARadial(names=dmunames)
+
+        >>> model.fit(X=X, Y=Y)
 
         >>> model.dmunames()
-        ["A", "B", "C", "D"]
+        ['A', 'B', 'C', 'D']
         """
-        retnames: list = []
+        dmunames : List[str] = []
 
         if self.names:
 
-            nlen = len(self.names)
+            names_length = len(self.names)
 
-            if nlen == self.nobs():
-                retnames = self.names
+            if names_length == self.nobs():
+                dmunames = self.names
 
-            elif nlen < self.nobs():
+            elif names_length < self.nobs():
                 warnings.warn("Length of names lower than number of observations")
-                retnames = self.names + [f"{i}" for i in range(nlen + 1, self.nobs())]
+                dmunames = self.names + [f"{i}" for i in range(1, self.nobs() - names_length + 1)]
 
             else:
                 warnings.warn("Length of names greater than number of observations")
-                retnames = self.names[:self.nobs()]
+                dmunames = self.names[:self.nobs()]
         else:
 
-            retnames = [f"{i}" for i in range(self.nobs())]
+            dmunames = [f"{i}" for i in range(self.nobs())]
 
-        return retnames
+        return dmunames
 
     @abstractmethod
     def pprint(self):

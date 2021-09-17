@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from src.core.symbols import *
+from src.utils.symbols import *
 from src.core.abstract_dea import AbstractDEA
 from nptyping import NDArray
 import numpy as np
