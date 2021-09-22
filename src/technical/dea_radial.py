@@ -52,7 +52,8 @@ class DEARadial(AbstractDEATechnical):
 
         super(AbstractDEATechnical).__init__()
 
-    def dea(self, Xref: NDArray = None, Yref: NDArray = None, ):
+    # TODO: Keep dea function without any arguments.
+    def dea(self):
         super(DEARadial, self).dea()
 
         # check if fit called before
@@ -60,14 +61,14 @@ class DEARadial(AbstractDEATechnical):
             raise ValueError("need to call model.fit(X, Y) to set inputs and outputs before run model.dea()!")
 
         # check parameters
-        if not Xref:
-            Xref = self.X
+        if self.Xref is None:
+            self.Xref = self.X
 
-        if not Yref:
-            Yref = self.Y
+        if self.Yref is None:
+            self.Yref = self.Y
 
-        nrefx, mref = Xref.shape
-        nrefy, sref = Yref.shape
+        nrefx, mref = self.Xref.shape
+        nrefy, sref = self.Yref.shape
 
         if nrefx != nrefy:
             raise ValueError(f"number of rows in Xref and Yref ({nrefx}, {nrefy}) are not equal!")
@@ -82,7 +83,7 @@ class DEARadial(AbstractDEATechnical):
         n_dmu = self.ndmu()
         nref_dmu = nrefx
 
-        effi = np.zeros((n_dmu, 1))
+        effi = np.ones((n_dmu, 1))
         lambdaeff = sparse.csr_matrix((n_dmu, nref_dmu)).toarray()
 
         # for each dmu model lp problem and solve with pyomo
@@ -92,7 +93,7 @@ class DEARadial(AbstractDEATechnical):
             y0 = self.Y[i, :]
 
             # create and abstract pyomo model for lp
-            lp_model = PyomoUtils.create_pyomo_model()
+            lp_model = pyo.ConcreteModel()
 
             # create set of indices for dmus
             lp_model.n = pyo.RangeSet(1, n_dmu)
@@ -113,28 +114,28 @@ class DEARadial(AbstractDEATechnical):
                 if self.disposX == Dispos.Strong:
 
                     for j in range(self.n_inp):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Xref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * x0[j]
                         lp_model.constraints.add(expr=(lhs <= rhs))
 
                 else:
 
                     for j in range(self.n_inp):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Xref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
                 if self.disposY == Dispos.Strong:
 
                     for j in range(self.n_out):
-                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Yref[i - 1, j] for i in lp_model.n)
                         rhs = y0[j]
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
                 else:
 
                     for j in range(self.n_out):
-                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Yref[i - 1, j] for i in lp_model.n)
                         rhs = y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
@@ -150,28 +151,28 @@ class DEARadial(AbstractDEATechnical):
                 if self.disposX == Dispos.Strong:
 
                     for j in range(self.n_inp):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Xref[i - 1, j] for i in lp_model.n)
                         rhs = x0[j]
                         lp_model.constraints.add(expr=(lhs <= rhs))
 
                 else:
 
                     for j in range(self.n_inp):
-                        lhs = sum(lp_model.lambdas[i] * Xref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Xref[i - 1, j] for i in lp_model.n)
                         rhs = x0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
                 if self.disposY == Dispos.Strong:
 
                     for j in range(self.n_out):
-                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Yref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * y0[j]
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
                 else:
 
                     for j in range(self.n_out):
-                        lhs = sum(lp_model.lambdas[i] * Yref[i - 1, j] for i in lp_model.n)
+                        lhs = sum(lp_model.lambdas[i] * self.Yref[i - 1, j] for i in lp_model.n)
                         rhs = lp_model.eff * y0[j]
                         lp_model.constraints.add(expr=(lhs == rhs))
 
@@ -187,13 +188,15 @@ class DEARadial(AbstractDEATechnical):
             results = opt.solve(lp_model)
 
             if results.solver.termination_condition != pyo.TerminationCondition.optimal and \
-               results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
-                warnings.warn(f"DMU {i} termination status: {results.solver.termination_condition}.")
+                    results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
+                # warnings.warn(f"DMU {i} termination status: {results.solver.termination_condition}.")
+                pass
+            else:
 
-            effi[i, :] = pyo.value(lp_model.eff)
+                effi[i, :] = pyo.value(lp_model.eff)
 
-            for j in range(self.ndmu()):
-                lambdaeff[i, j] = pyo.value(lp_model.lambdas[j+1])
+                for j in range(self.ndmu()):
+                    lambdaeff[i, j] = pyo.value(lp_model.lambdas[j + 1])
 
         # save results to model
         self.eff = effi
@@ -222,9 +225,8 @@ class DEARadial(AbstractDEATechnical):
             else:
                 rhoY = np.zeros(self.Y.shape)
 
-            slackModel = DEAAdditive(rts=self.rts, optimizer=self.optimizer)
-            slackModel.fit(X=self.Xtarget, Y=self.Ytarget)
-            slackModel.dea(Xref=Xref, Yref=Yref, rhoX=rhoX, rhoY=rhoY)
+            slackModel = DEAAdditive(rts=self.rts, optimizer=self.optimizer, rhoX=rhoX, rhoY=rhoY)
+            slackModel.fit(X=self.Xtarget, Y=self.Ytarget, Xref=self.Xref, Yref=self.Yref)
 
             self.slackX = slackModel.slacks(slack=Slack.X)
             self.slackY = slackModel.slacks(slack=Slack.Y)
@@ -238,8 +240,8 @@ class DEARadial(AbstractDEATechnical):
             self.slackX = None
             self.slackY = None
 
-    def fit(self, X: NDArray, Y: NDArray) -> None:
-        super(DEARadial, self).fit(X, Y)
+    def fit(self, X: NDArray, Y: NDArray, Xref: NDArray = None, Yref: NDArray = None) -> None:
+        super(DEARadial, self).fit(X, Y, Xref, Yref)
 
     def dmunames(self) -> List[str]:
         return super(DEARadial, self).dmunames()
@@ -278,7 +280,8 @@ class DEARadial(AbstractDEATechnical):
             print(f"Weak disposibility of outputs")
 
         from prettytable import PrettyTable
-        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in range(self.slackY.shape[1])]
+        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in
+                                                                                            range(self.slackY.shape[1])]
         t = PrettyTable(cols)
 
         for i in range(self.n_dmu):
@@ -296,8 +299,8 @@ class DEARadial(AbstractDEATechnical):
 
 
 if __name__ == '__main__':
-
-    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    X = np.array(
+        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
     input_crs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)

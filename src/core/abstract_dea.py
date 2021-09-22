@@ -13,6 +13,9 @@ class AbstractDEA(ABC):
     def __init__(self):
         self.X = None
         self.Y = None
+        self.Xref = None
+        self.Yref = None
+
         self.n_dmu = None
         self.n_inp = None
         self.n_out = None
@@ -26,8 +29,9 @@ class AbstractDEA(ABC):
     def dea(self):
         pass
 
+    # TODO: Add Xref and Yref to fit function.
     @abstractmethod
-    def fit(self, X: NDArray, Y: NDArray) -> None:
+    def fit(self, X: NDArray, Y: NDArray, Xref: NDArray, Yref: NDArray) -> None:
         """
 
         Parameters
@@ -68,6 +72,8 @@ class AbstractDEA(ABC):
 
         self.X = X
         self.Y = Y
+        self.Xref = Xref
+        self.Yref = Yref
         self.n_dmu = nx
 
         self.dea()

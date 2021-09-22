@@ -83,7 +83,7 @@ class TechnicalDEAUtils:
             _, m = X.shape
 
             for i in range(m):
-                rhoX[:, i] = 1 / np.std(X[:, i])
+                rhoX[:, i] = 1.0 / np.std(X[:, i], ddof=1)
 
             rhoX[np.isinf(rhoX)] = 0
 
@@ -93,9 +93,9 @@ class TechnicalDEAUtils:
             _, s = Y.shape
 
             for i in range(s):
-                rhoX[:, i] = 1 / np.std(Y[:, i])
+                rhoY[:, i] = 1.0 / np.std(Y[:, i], ddof=1)
 
-            rhoX[np.isinf(rhoY)] = 0
+            rhoY[np.isinf(rhoY)] = 0
 
         return rhoX, rhoY
 
@@ -178,6 +178,8 @@ class TechnicalDEAUtils:
                 rhoY = 1 / (normalization * (maxY[i, 0] - Y[:, i]))
 
             rhoY[np.isinf(rhoY)] = 0
+
+        return rhoX, rhoY
 
     @staticmethod
     def getAdditiveModelWeights(X: NDArray, Y: NDArray, model: AdditiveModels, orient: Orient) -> (NDArray, NDArray):

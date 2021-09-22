@@ -26,7 +26,9 @@ class DEAAdditive(AbstractDEATechnical):
                  disposY: Dispos = Dispos.Strong,
                  optimizer: DEAOptimizer = DEAOptimizer(optimizer=Optimizer.GLPK,
                                                         time_limit=None,
-                                                        silent=False)):
+                                                        silent=False),
+                 rhoX: NDArray = None,
+                 rhoY: NDArray = None):
 
         if disposX != Dispos.Strong and disposX != Dispos.Weak:
             raise ValueError("`disposX` must be Dispos.Strong or Dispos.Weak")
@@ -47,6 +49,8 @@ class DEAAdditive(AbstractDEATechnical):
         self.disposX = disposX
         self.disposY = disposY
         self.optimizer = optimizer
+        self.rhoX = rhoX
+        self.rhoY = rhoY
 
         self.names = None
         self.slacksX = None
@@ -57,9 +61,8 @@ class DEAAdditive(AbstractDEATechnical):
 
         super(AbstractDEATechnical).__init__()
 
-    def dea(self,
-            Xref: NDArray = None, Yref: NDArray = None,
-            rhoX: NDArray = None, rhoY: NDArray = None):
+    # TODO: Keep dea function without any arguments.
+    def dea(self):
         super(DEAAdditive, self).dea()
 
         # check if fit called before
@@ -67,14 +70,14 @@ class DEAAdditive(AbstractDEATechnical):
             raise ValueError("need to call model.fit(X, Y) to set inputs and outputs before run model.dea()!")
 
         # check parameters
-        if Xref is None:
-            Xref = self.X
+        if self.Xref is None:
+            self.Xref = self.X
 
-        if Yref is None:
-            Yref = self.Y
+        if self.Yref is None:
+            self.Yref = self.Y
 
-        nrefx, mref = Xref.shape
-        nrefy, sref = Yref.shape
+        nrefx, mref = self.Xref.shape
+        nrefy, sref = self.Yref.shape
 
         if nrefx != nrefy:
             raise ValueError(f"number of rows in Xref and Yref ({nrefx}, {nrefy}) are not equal!")
@@ -85,17 +88,17 @@ class DEAAdditive(AbstractDEATechnical):
         if self.n_out != sref:
             raise ValueError(f"number of cols in Y and Yref ({self.n_out}, {sref}) are not equal!")
 
-        if rhoX is not None and rhoY is not None:
+        if self.rhoX is not None and self.rhoY is not None:
             self.model = AdditiveModels.Custom
 
         if self.model != AdditiveModels.Custom:
-            rhoX, rhoY = TechnicalDEAUtils.getAdditiveModelWeights(self.X, self.Y, self.model, self.orient)
+            self.rhoX, self.rhoY = TechnicalDEAUtils.getAdditiveModelWeights(self.X, self.Y, self.model, self.orient)
 
-        if rhoX.shape != self.X.shape:
-            raise ValueError(f"shape of rhoX and X {rhoX.shape, self.X.shape} are not equal!")
+        if self.rhoX.shape != self.X.shape:
+            raise ValueError(f"shape of rhoX and X {self.rhoX.shape, self.X.shape} are not equal!")
 
-        if rhoY.shape != self.Y.shape:
-            raise ValueError(f"shape of rhoY and Y {rhoY.shape, self.Y.shape} are not equal!")
+        if self.rhoY.shape != self.Y.shape:
+            raise ValueError(f"shape of rhoY and Y {self.rhoY.shape, self.Y.shape} are not equal!")
 
         # parameters for additional condition in BAM model
         minXref = np.min(self.X, axis=0)
@@ -116,8 +119,8 @@ class DEAAdditive(AbstractDEATechnical):
             y0 = self.Y[i, :]
 
             # value of weights to evaluate
-            rhoX0 = rhoX[i, :]
-            rhoY0 = rhoY[i, :]
+            rhoX0 = self.rhoX[i, :]
+            rhoY0 = self.rhoY[i, :]
 
             if self.disposX == Dispos.Weak:
                 rhoX0 = np.zeros((1, n))
@@ -162,13 +165,13 @@ class DEAAdditive(AbstractDEATechnical):
             lp_model.constraints = pyo.ConstraintList()
 
             for j in range(self.n_inp):
-                lhs = sum(Xref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
+                lhs = sum(self.Xref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                 rhs = x0[j] - lp_model.sX[j + 1]
 
                 lp_model.constraints.add(expr=(lhs == rhs))
 
             for j in range(self.n_out):
-                lhs = sum(Yref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
+                lhs = sum(self.Yref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                 rhs = y0[j] + lp_model.sY[j + 1]
 
                 lp_model.constraints.add(expr=(lhs == rhs))
@@ -180,13 +183,13 @@ class DEAAdditive(AbstractDEATechnical):
                 # add constants for BAM CSR model
                 if self.model == AdditiveModels.BAM:
                     for j in range(1, self.n_inp):
-                        lhs = sum(Xref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
+                        lhs = sum(self.Xref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
                         rhs = minXref[j - 1]
 
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
                     for j in range(1, self.n_out):
-                        lhs = sum(Yref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
+                        lhs = sum(self.Yref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
                         rhs = maxYref[j - 1]
 
                         lp_model.constraints.add(expr=(lhs <= rhs))
@@ -208,12 +211,11 @@ class DEAAdditive(AbstractDEATechnical):
 
             # results, lp_model = PyomoUtils.solve_pyomo_model(model=lp_model, optimizer=self.optimizer)
 
+            # TODO: Refactor solve function in utils.
             opt = pyo.SolverFactory("glpk")
             results = opt.solve(lp_model)
 
             if results.solver.termination_condition != pyo.TerminationCondition.optimal and results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
-                message = f"DMU {i} termination status: {results.solver.termination_condition}."
-                warnings.warn(message)
                 continue
 
             effi[i, :] = pyo.value(lp_model.obj)
@@ -235,10 +237,10 @@ class DEAAdditive(AbstractDEATechnical):
         self.lambdas = lambdaeff
 
         self.Xtarget = self.X - slackX
-        self.Ytarget = self.Y - slackY
+        self.Ytarget = self.Y + slackY
 
-    def fit(self, X: NDArray, Y: NDArray) -> None:
-        super(DEAAdditive, self).fit(X, Y)
+    def fit(self, X: NDArray, Y: NDArray, Xref: NDArray = None, Yref: NDArray = None) -> None:
+        super(DEAAdditive, self).fit(X, Y, Xref, Yref)
 
     def dmunames(self) -> List[str]:
         return super(DEAAdditive, self).dmunames()
