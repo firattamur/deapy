@@ -33,7 +33,7 @@ class DEAAdditive(AbstractDEATechnical):
         if disposX != Dispos.Strong and disposX != Dispos.Weak:
             raise ValueError("`disposX` must be Dispos.Strong or Dispos.Weak")
 
-        if disposY != Dispos.Strong and disposX != Dispos.Weak:
+        if disposY != Dispos.Strong and disposY != Dispos.Weak:
             raise ValueError("`disposY` must be Dispos.Strong or Dispos.Weak")
 
         if orient != Orient.Input and orient != Orient.Output and orient != Orient.Graph:
@@ -76,11 +76,11 @@ class DEAAdditive(AbstractDEATechnical):
         if self.Yref is None:
             self.Yref = self.Y
 
-        nrefx, mref = self.Xref.shape
-        nrefy, sref = self.Yref.shape
+        nxref, mref = self.Xref.shape
+        nyref, sref = self.Yref.shape
 
-        if nrefx != nrefy:
-            raise ValueError(f"number of rows in Xref and Yref ({nrefx}, {nrefy}) are not equal!")
+        if nxref != nyref:
+            raise ValueError(f"number of rows in Xref and Yref ({nxref}, {nyref}) are not equal!")
 
         if self.n_inp != mref:
             raise ValueError(f"number of cols in X and Xref ({self.n_inp}, {mref}) are not equal!")
@@ -105,7 +105,7 @@ class DEAAdditive(AbstractDEATechnical):
         maxYref = np.max(self.Y, axis=0)
 
         n = self.ndmu()
-        nref = nrefx
+        nref = nxref
 
         effi = np.zeros((n, 1))
         slackX = np.zeros((n, self.n_inp))
@@ -123,17 +123,17 @@ class DEAAdditive(AbstractDEATechnical):
             rhoY0 = self.rhoY[i, :]
 
             if self.disposX == Dispos.Weak:
-                rhoX0 = np.zeros((1, n))
+                rhoX0 = np.zeros((n,))
 
             if self.disposY == Dispos.Weak:
-                rhoY0 = np.zeros((1, n))
+                rhoY0 = np.zeros((n,))
 
             lp_model = PyomoUtils.create_pyomo_model()
 
             # create set of indices for inputs and outputs
-            lp_model.dmu = pyo.RangeSet(1, self.n_dmu)
-            lp_model.inp = pyo.RangeSet(1, self.n_inp)
-            lp_model.out = pyo.RangeSet(1, self.n_out)
+            lp_model.dmu = pyo.RangeSet(1, nref)
+            lp_model.inp = pyo.RangeSet(1, mref)
+            lp_model.out = pyo.RangeSet(1, sref)
 
             # create variables for slackX, slackY and lambdas
             lp_model.sX = pyo.Var(lp_model.inp, within=pyo.NonNegativeReals)
@@ -142,23 +142,23 @@ class DEAAdditive(AbstractDEATechnical):
 
             if self.orient == Orient.Graph:
 
-                def obj_rule(lp_model):
-                    return sum(rhoX0[j - 1] * lp_model.sX[j] for j in lp_model.inp) + \
-                           sum(rhoY0[j - 1] * lp_model.sY[j] for j in lp_model.out)
+                def obj_rule(model):
+                    return sum(rhoX0[j - 1] * model.sX[j] for j in model.inp) + \
+                           sum(rhoY0[j - 1] * model.sY[j] for j in model.out)
 
                 lp_model.obj = pyo.Objective(rule=obj_rule, sense=pyo.maximize)
 
             elif self.orient == Orient.Input:
 
-                def obj_rule(lp_model):
-                    return sum(rhoX0[j - 1] * lp_model.sX[j] for j in lp_model.inp)
+                def obj_rule(model):
+                    return sum(rhoX0[j - 1] * model.sX[j] for j in model.inp)
 
                 lp_model.obj = pyo.Objective(rule=obj_rule, sense=pyo.maximize)
 
             else:
 
-                def obj_rule(lp_model):
-                    return sum(rhoY0[j - 1] * lp_model.sY[j] for j in lp_model.out)
+                def obj_rule(model):
+                    return sum(rhoY0[j - 1] * model.sY[j] for j in model.out)
 
                 lp_model.obj = pyo.Objective(rule=obj_rule, sense=pyo.maximize)
 
@@ -182,22 +182,23 @@ class DEAAdditive(AbstractDEATechnical):
 
                 # add constants for BAM CSR model
                 if self.model == AdditiveModels.BAM:
-                    for j in range(1, self.n_inp):
-                        lhs = sum(self.Xref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
-                        rhs = minXref[j - 1]
+
+                    for j in range(self.n_inp):
+                        lhs = sum(self.Xref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
+                        rhs = minXref[j]
 
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
-                    for j in range(1, self.n_out):
-                        lhs = sum(self.Yref[t - 1, j - 1] * lp_model.lambdas[t] for t in lp_model.dmu)
-                        rhs = maxYref[j - 1]
+                    for j in range(self.n_out):
+                        lhs = sum(self.Yref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
+                        rhs = maxYref[j]
 
                         lp_model.constraints.add(expr=(lhs <= rhs))
 
             else:
                 lhs = sum(lp_model.lambdas[j] for j in lp_model.dmu)
                 rhs = 1
-                lp_model.constraints.add(expr=(lhs == 1))
+                lp_model.constraints.add(expr=(lhs == rhs))
 
             # fix values of slacks when weight are zero
 
@@ -216,7 +217,7 @@ class DEAAdditive(AbstractDEATechnical):
             results = opt.solve(lp_model)
 
             if results.solver.termination_condition != pyo.TerminationCondition.optimal and results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
-                continue
+                pass
 
             effi[i, :] = pyo.value(lp_model.obj)
 

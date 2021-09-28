@@ -7,6 +7,10 @@ import numpy as np
 from typing import Dict
 from nptyping import NDArray
 
+import warnings
+
+warnings.filterwarnings("ignore")
+
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
@@ -22,8 +26,7 @@ class TestDEAAdditive(unittest.TestCase):
 
     # test data
 
-    X = np.array(
-        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
     def test_inputs(self):
@@ -182,16 +185,16 @@ class TestDEAAdditive(unittest.TestCase):
     # TEST - Additive MIP CRS
     # ------------------------------------------------------------
 
-    additive_crs_mip = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.CSR)
-    additive_crs_mip.fit(X=X, Y=Y)
+    additive_mip_crs = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.CSR)
+    additive_mip_crs.fit(X=X, Y=Y)
 
-    all_models["additive_crs_mip"] = additive_crs_mip
-    all_models_type["additive_crs_mip"] = DEAAdditive
-    all_models_ndmu["additive_crs_mip"] = 11
-    all_models_ninp["additive_crs_mip"] = 2
-    all_models_nout["additive_crs_mip"] = 1
+    all_models["additive_mip_crs"] = additive_mip_crs
+    all_models_type["additive_mip_crs"] = DEAAdditive
+    all_models_ndmu["additive_mip_crs"] = 11
+    all_models_ninp["additive_mip_crs"] = 2
+    all_models_nout["additive_mip_crs"] = 1
 
-    all_models_efficiency["additive_crs_mip"] = np.array([
+    all_models_efficiency["additive_mip_crs"] = np.array([
         [0.0000000000],
         [0.7577160494],
         [0.4168399168],
@@ -205,7 +208,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.2352941176]
     ], dtype=np.float64)
 
-    all_models_slacks_X["additive_crs_mip"] = np.array([
+    all_models_slacks_X["additive_mip_crs"] = np.array([
         [0.000000000, 0.0000000000],
         [3.037037037, 6.8148148150],
         [0.000000000, 10.837837838],
@@ -219,7 +222,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.000000000, 4.0000000000]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["additive_crs_mip"] = np.array([
+    all_models_slacks_Y["additive_mip_crs"] = np.array([
         [0.000000000],
         [0.000000000],
         [0.000000000],
@@ -233,23 +236,23 @@ class TestDEAAdditive(unittest.TestCase):
         [0.000000000]
     ], dtype=np.float64)
 
-    all_models_peersmatrix["additive_crs_mip"] = None
-    all_models_weights["additive_crs_mip"] = None
+    all_models_peersmatrix["additive_mip_crs"] = None
+    all_models_weights["additive_mip_crs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive MIP VRS
     # ------------------------------------------------------------
 
-    additive_vrs_mip = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.VRS)
-    additive_vrs_mip.fit(X=X, Y=Y)
+    additive_mip_vrs = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.VRS)
+    additive_mip_vrs.fit(X=X, Y=Y)
 
-    all_models["additive_vrs_mip"] = additive_vrs_mip
-    all_models_type["additive_vrs_mip"] = DEAAdditive
-    all_models_ndmu["additive_vrs_mip"] = 11
-    all_models_ninp["additive_vrs_mip"] = 2
-    all_models_nout["additive_vrs_mip"] = 1
+    all_models["additive_mip_vrs"] = additive_mip_vrs
+    all_models_type["additive_mip_vrs"] = DEAAdditive
+    all_models_ndmu["additive_mip_vrs"] = 11
+    all_models_ninp["additive_mip_vrs"] = 2
+    all_models_nout["additive_mip_vrs"] = 1
 
-    all_models_efficiency["additive_vrs_mip"] = np.array([
+    all_models_efficiency["additive_mip_vrs"] = np.array([
         [0.0000000000],
         [0.5075187970],
         [0.0000000000],
@@ -263,7 +266,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.2352941176]
     ], dtype=np.float64)
 
-    all_models_slacks_X["additive_vrs_mip"] = np.array([
+    all_models_slacks_X["additive_mip_vrs"] = np.array([
         [0, 0],
         [0, 0],
         [0, 0],
@@ -277,7 +280,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0, 4]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["additive_vrs_mip"] = np.array([
+    all_models_slacks_Y["additive_mip_vrs"] = np.array([
         [0.0000000000],
         [7.1052631580],
         [0.0000000000],
@@ -291,23 +294,23 @@ class TestDEAAdditive(unittest.TestCase):
         [0.0000000000]
     ], dtype=np.float64)
 
-    all_models_peersmatrix["additive_vrs_mip"] = None
-    all_models_weights["additive_vrs_mip"] = None
+    all_models_peersmatrix["additive_mip_vrs"] = None
+    all_models_weights["additive_mip_vrs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive Normalized CRS
     # ------------------------------------------------------------
 
-    additive_crs_norm = DEAAdditive(model=AdditiveModels.NORM, rts=RTS.CSR)
-    additive_crs_norm.fit(X=X, Y=Y)
+    additive_norm_crs = DEAAdditive(model=AdditiveModels.NORM, rts=RTS.CSR)
+    additive_norm_crs.fit(X=X, Y=Y)
 
-    all_models["additive_crs_norm"] = additive_crs_norm
-    all_models_type["additive_crs_norm"] = DEAAdditive
-    all_models_ndmu["additive_crs_norm"] = 11
-    all_models_ninp["additive_crs_norm"] = 2
-    all_models_nout["additive_crs_norm"] = 1
+    all_models["additive_norm_crs"] = additive_norm_crs
+    all_models_type["additive_norm_crs"] = DEAAdditive
+    all_models_ndmu["additive_norm_crs"] = 11
+    all_models_ninp["additive_norm_crs"] = 2
+    all_models_nout["additive_norm_crs"] = 1
 
-    all_models_efficiency["additive_crs_norm"] = np.array([
+    all_models_efficiency["additive_norm_crs"] = np.array([
         [0.0000000000],
         [1.3569256615],
         [1.7407259078],
@@ -321,7 +324,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.6424624298]
     ], dtype=np.float64)
 
-    all_models_slacks_X["additive_crs_norm"] = np.array([
+    all_models_slacks_X["additive_norm_crs"] = np.array([
         [0.0000000000, 0.0000000000],
         [3.0370370370, 6.8148148150],
         [0.0000000000, 10.837837838],
@@ -335,7 +338,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.0000000000, 4.0000000000]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["additive_crs_norm"] = np.array([
+    all_models_slacks_Y["additive_norm_crs"] = np.array([
         [0],
         [0],
         [0],
@@ -349,23 +352,23 @@ class TestDEAAdditive(unittest.TestCase):
         [0]
     ], dtype=np.float64)
 
-    all_models_peersmatrix["additive_crs_norm"] = None
-    all_models_weights["additive_crs_norm"] = None
+    all_models_peersmatrix["additive_norm_crs"] = None
+    all_models_weights["additive_norm_crs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive Normalized VRS
     # ------------------------------------------------------------
 
-    additive_vrs_norm = DEAAdditive(model=AdditiveModels.NORM, rts=RTS.VRS)
-    additive_vrs_norm.fit(X=X, Y=Y)
+    additive_norm_vrs = DEAAdditive(model=AdditiveModels.NORM, rts=RTS.VRS)
+    additive_norm_vrs.fit(X=X, Y=Y)
 
-    all_models["additive_vrs_norm"] = additive_vrs_norm
-    all_models_type["additive_vrs_norm"] = DEAAdditive
-    all_models_ndmu["additive_vrs_norm"] = 11
-    all_models_ninp["additive_vrs_norm"] = 2
-    all_models_nout["additive_vrs_norm"] = 1
+    all_models["additive_norm_vrs"] = additive_norm_vrs
+    all_models_type["additive_norm_vrs"] = DEAAdditive
+    all_models_ndmu["additive_norm_vrs"] = 11
+    all_models_ninp["additive_norm_vrs"] = 2
+    all_models_nout["additive_norm_vrs"] = 1
 
-    all_models_efficiency["additive_vrs_norm"] = np.array([
+    all_models_efficiency["additive_norm_vrs"] = np.array([
         [0.0000000000],
         [0.8049248943],
         [0.0000000000],
@@ -379,7 +382,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0.6424624298]
     ], dtype=np.float64)
 
-    all_models_slacks_X["additive_vrs_norm"] = np.array([
+    all_models_slacks_X["additive_norm_vrs"] = np.array([
         [0, 0.00],
         [0, 0.65],
         [0, 0.00],
@@ -393,7 +396,7 @@ class TestDEAAdditive(unittest.TestCase):
         [0, 4.00]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["additive_vrs_norm"] = np.array([
+    all_models_slacks_Y["additive_norm_vrs"] = np.array([
         [0.00],
         [6.25],
         [0.00],
@@ -407,114 +410,373 @@ class TestDEAAdditive(unittest.TestCase):
         [0.00]
     ], dtype=np.float64)
 
-    all_models_peersmatrix["additive_vrs_norm"] = None
-    all_models_weights["additive_vrs_norm"] = None
+    all_models_peersmatrix["additive_norm_vrs"] = None
+    all_models_weights["additive_norm_vrs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive RAM CRS
     # ------------------------------------------------------------
 
-    additive_vrs_norm = DEAAdditive(model=AdditiveModels.NORM, rts=RTS.VRS)
-    additive_vrs_norm.fit(X=X, Y=Y)
+    additive_ram_crs = DEAAdditive(model=AdditiveModels.RAM, rts=RTS.CSR)
+    additive_ram_crs.fit(X=X, Y=Y)
 
-    all_models["additive_vrs_norm"] = additive_vrs_norm
-    all_models_type["additive_vrs_norm"] = DEAAdditive
-    all_models_ndmu["additive_vrs_norm"] = 11
-    all_models_ninp["additive_vrs_norm"] = 2
-    all_models_nout["additive_vrs_norm"] = 1
+    all_models["additive_ram_crs"] = additive_ram_crs
+    all_models_type["additive_ram_crs"] = DEAAdditive
+    all_models_ndmu["additive_ram_crs"] = 11
+    all_models_ninp["additive_ram_crs"] = 2
+    all_models_nout["additive_ram_crs"] = 1
 
-    all_models_efficiency["additive_vrs_norm"] = np.array([
-        [0.0000000000],
-        [0.8049248943],
-        [0.0000000000],
-        [0.0000000000],
-        [2.0149704908],
-        [0.0000000000],
-        [0.0000000000],
-        [0.0000000000],
-        [0.0000000000],
-        [3.9898943952],
-        [0.6424624298]
+    all_models_efficiency["additive_ram_crs"] = np.array([
+        [0.00000000000],
+        [0.14094094094],
+        [0.18063063063],
+        [0.00000000000],
+        [0.27937937938],
+        [0.17657657658],
+        [0.00000000000],
+        [0.17164048866],
+        [0.11671671672],
+        [0.41766766767],
+        [0.06666666667]
     ], dtype=np.float64)
 
-    all_models_slacks_X["additive_vrs_norm"] = np.array([
-        [0, 0.00],
-        [0, 0.65],
-        [0, 0.00],
-        [0, 0.00],
-        [0, 2.95],
-        [0, 0.00],
-        [0, 0.00],
-        [0, 0.00],
-        [0, 0.00],
-        [17, 15.00],
-        [0, 4.00]
+    all_models_slacks_X["additive_ram_crs"] = np.array([
+        [0.0000000000, 0.0000000000],
+        [3.0370370370, 6.8148148150],
+        [0.0000000000, 10.837837838],
+        [0.0000000000, 0.0000000000],
+        [10.592592593, 11.037037037],
+        [14.666666667, 2.6666666670],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 10.298429319],
+        [8.2962962960, 2.5185185190],
+        [17.925925926, 15.370370370],
+        [0.0000000000, 4.0000000000]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["additive_vrs_norm"] = np.array([
-        [0.00],
-        [6.25],
-        [0.00],
-        [0.00],
-        [13.75],
-        [0.00],
-        [0.00],
-        [0.00],
-        [0.00],
-        [1.00],
-        [0.00]
+    all_models_slacks_Y["additive_ram_crs"] = np.array([
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0]
     ], dtype=np.float64)
 
-    all_models_peersmatrix["additive_vrs_norm"] = None
-    all_models_weights["additive_vrs_norm"] = None
+    all_models_peersmatrix["additive_ram_crs"] = None
+    all_models_weights["additive_ram_crs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive RAM VRS
     # ------------------------------------------------------------
 
+    additive_ram_vrs = DEAAdditive(model=AdditiveModels.RAM, rts=RTS.VRS)
+    additive_ram_vrs.fit(X=X, Y=Y)
+
+    all_models["additive_ram_vrs"] = additive_ram_vrs
+    all_models_type["additive_ram_vrs"] = DEAAdditive
+    all_models_ndmu["additive_ram_vrs"] = 11
+    all_models_ninp["additive_ram_vrs"] = 2
+    all_models_nout["additive_ram_vrs"] = 1
+
+    all_models_efficiency["additive_ram_vrs"] = np.array([
+        [0.00000000000],
+        [0.10297482838],
+        [0.00000000000],
+        [0.00000000000],
+        [0.25553012967],
+        [0.00000000000],
+        [0.00000000000],
+        [0.00000000000],
+        [0.00000000000],
+        [0.41764590678],
+        [0.06666666667]
+    ], dtype=np.float64)
+
+    all_models_slacks_X["additive_ram_vrs"] = np.array([
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [17, 15],
+        [0, 4]
+    ], dtype=np.float64)
+
+    all_models_slacks_Y["additive_ram_vrs"] = np.array([
+        [0.0000000000],
+        [7.1052631580],
+        [0.0000000000],
+        [0.0000000000],
+        [17.631578947],
+        [0.0000000000],
+        [0.0000000000],
+        [0.0000000000],
+        [0.0000000000],
+        [1.0000000000],
+        [0.0000000000]
+    ], dtype=np.float64)
+
+    all_models_peersmatrix["additive_ram_vrs"] = None
+    all_models_weights["additive_ram_vrs"] = None
+
     # ------------------------------------------------------------
     # TEST - Additive BAM CRS
     # ------------------------------------------------------------
+
+    additive_bam_crs = DEAAdditive(model=AdditiveModels.BAM, rts=RTS.CSR)
+    additive_bam_crs.fit(X=X, Y=Y)
+
+    all_models["additive_bam_crs"] = additive_bam_crs
+    all_models_type["additive_bam_crs"] = DEAAdditive
+    all_models_ndmu["additive_bam_crs"] = 11
+    all_models_ninp["additive_bam_crs"] = 2
+    all_models_nout["additive_bam_crs"] = 1
+
+    all_models_efficiency["additive_bam_crs"] = np.array([
+        [0.0000000000],
+        [0.4578892372],
+        [0.3051750381],
+        [0.0000000000],
+        [0.6732181854],
+        [0.3239568683],
+        [0.0000000000],
+        [0.5255235602],
+        [0.1913580247],
+        [0.6902867780],
+        [0.1212121212]
+    ], dtype=np.float64)
+
+    all_models_slacks_X["additive_bam_crs"] = np.array([
+        [0.0000000000, 0.0000000000],
+        [4.1103448280, 6.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [13.000000000, 8.0000000000],
+        [17.493670886, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 9.2251308900],
+        [8.2962962960, 2.5185185190],
+        [13.296296296, 13.518518519],
+        [0.0000000000, 4.0000000000]
+    ], dtype=np.float64)
+
+    all_models_slacks_Y["additive_bam_crs"] = np.array([
+        [0.0000000000],
+        [0.0000000000],
+        [5.4931506849],
+        [0.0000000000],
+        [0.4520547945],
+        [0.0000000000],
+        [0.0000000000],
+        [1.0000000000],
+        [0.0000000000],
+        [5.0000000000],
+        [0.0000000000]
+    ], dtype=np.float64)
+
+    all_models_peersmatrix["additive_bam_crs"] = None
+    all_models_weights["additive_bam_crs"] = None
 
     # ------------------------------------------------------------
     # TEST - Additive BAM VRS
     # ------------------------------------------------------------
 
+    additive_bam_vrs = DEAAdditive(model=AdditiveModels.BAM, rts=RTS.VRS)
+    additive_bam_vrs.fit(X=X, Y=Y)
+
+    all_models["additive_bam_vrs"] = additive_bam_vrs
+    all_models_type["additive_bam_vrs"] = DEAAdditive
+    all_models_ndmu["additive_bam_vrs"] = 11
+    all_models_ninp["additive_bam_vrs"] = 2
+    all_models_nout["additive_bam_vrs"] = 1
+
+    all_models_efficiency["additive_bam_vrs"] = np.array([
+        [0.0000000000],
+        [0.1998936736],
+        [0.0000000000],
+        [0.0000000000],
+        [0.4329710145],
+        [0.0000000000],
+        [0.0000000000],
+        [0.0000000000],
+        [0.0000000000],
+        [0.5713608345],
+        [0.1212121212]
+    ], dtype=np.float64)
+
+    all_models_slacks_X["additive_bam_vrs"] = np.array([
+        [0.0000000000, 0.0000000000],
+        [6.5964912280, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [13.000000000, 1.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [0.0000000000, 0.0000000000],
+        [5.0000000000, 11.000000000],
+        [0.0000000000, 4.0000000000]
+    ], dtype=np.float64)
+
+    all_models_slacks_Y["additive_bam_vrs"] = np.array([
+        [0],
+        [0],
+        [0],
+        [0],
+        [4],
+        [0],
+        [0],
+        [0],
+        [0],
+        [5],
+        [0]
+    ], dtype=np.float64)
+
+    all_models_peersmatrix["additive_bam_vrs"] = None
+    all_models_weights["additive_bam_vrs"] = None
+
     # ------------------------------------------------------------
     # TEST - Additive Custom
     # ------------------------------------------------------------
 
-    # ------------------------------------------------------------
-    # TEST - Additive Print
-    # ------------------------------------------------------------
+    additive_custom_crs = DEAAdditive(rhoX=(1 / X), rhoY=(1 / Y), rts=RTS.CSR)
+    additive_custom_crs.fit(X=X, Y=Y)
+
+    def test_custom_csr(self):
+        self.assertEqual(self.additive_custom_crs.model, AdditiveModels.Custom)
+        self.assertTrue(np.allclose(self.additive_custom_crs.efficiency(),
+                                    self.additive_mip_crs.efficiency(),
+                                    atol=1e-10))
+
+    additive_custom_vrs = DEAAdditive(rhoX=(1 / X), rhoY=(1 / Y), rts=RTS.VRS)
+    additive_custom_vrs.fit(X=X, Y=Y)
+
+    def test_custom_vsr(self):
+        self.assertEqual(self.additive_custom_vrs.model, AdditiveModels.Custom)
+        self.assertTrue(np.allclose(self.additive_custom_vrs.efficiency(),
+                                    self.additive_mip_vrs.efficiency(),
+                                    atol=1e-10))
 
     # ------------------------------------------------------------
-    # TEST - Additive Graph Orient
+    # TEST - Additive Weights Zero - Slacks Zero
     # ------------------------------------------------------------
 
-    # ------------------------------------------------------------
-    # TEST - Additive Input Orient
-    # ------------------------------------------------------------
+    additive_weights_zero = DEAAdditive(rhoX=np.zeros(X.shape), rhoY=np.zeros(Y.shape))
+    additive_weights_zero.fit(X=X, Y=Y)
+
+    def test_weights_zero_slacks(self):
+        self.assertTrue(np.allclose(self.additive_weights_zero.slacks(slack=Slack.X),
+                                    np.zeros(self.X.shape),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_weights_zero.slacks(slack=Slack.Y),
+                                    np.zeros(self.Y.shape),
+                                    atol=1e-10))
 
     # ------------------------------------------------------------
-    # TEST - Additive Output Orient
+    # TEST - Additive One-By-One DEA
     # ------------------------------------------------------------
 
-    # ------------------------------------------------------------
-    # TEST - Additive Input Orient  - Weak Disposibility
-    # ------------------------------------------------------------
+    ndmu, ninp = X.shape
+    _,    nout = Y.shape
 
-    # ------------------------------------------------------------
-    # TEST - Additive Output Orient - Weak Disposibility
-    # ------------------------------------------------------------
+    additive_default_crs_ref_efficiency = np.zeros((ndmu, 1))
+    additive_default_vrs_ref_efficiency = np.zeros((ndmu, 1))
 
-    # ------------------------------------------------------------
-    # TEST - Vector and Matrix Input and Outputs
-    # ------------------------------------------------------------
+    additive_custom_crs_ref_efficiency = np.zeros((ndmu, 1))
+    additive_custom_vrs_ref_efficiency = np.zeros((ndmu, 1))
 
-    # ------------------------------------------------------------
-    # TEST - RAM and BAM with Orientation
-    # ------------------------------------------------------------
+    additive_ones_crs_ref_efficiency = np.zeros((ndmu, 1))
+    additive_ones_vrs_ref_efficiency = np.zeros((ndmu, 1))
+
+    additive_mip_crs_ref_efficiency = np.zeros((ndmu, 1))
+    additive_mip_vrs_ref_efficiency = np.zeros((ndmu, 1))
+
+    Xref = X.copy()
+    Yref = Y.copy()
+
+    for i in range(ndmu):
+
+        Xeval = X[i, :]
+        Xeval = Xeval.reshape(1, ninp)
+
+        Yeval = Y[i, :]
+        Yeval = Yeval.reshape(1, nout)
+
+        additive_default_crs_ref = DEAAdditive(rts=RTS.CSR)
+        additive_default_crs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_default_crs_ref_efficiency[i] = additive_default_crs_ref.efficiency()
+
+        additive_default_vrs_ref = DEAAdditive(rts=RTS.VRS)
+        additive_default_vrs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_default_vrs_ref_efficiency[i] = additive_default_vrs_ref.efficiency()
+
+        additive_custom_crs_ref = DEAAdditive(model=AdditiveModels.Custom, rts=RTS.CSR, rhoX=(1 / Xeval),
+                                              rhoY=(1 / Yeval))
+        additive_custom_crs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_custom_crs_ref_efficiency[i] = additive_custom_crs_ref.efficiency()
+
+        additive_custom_vrs_ref = DEAAdditive(model=AdditiveModels.Custom, rts=RTS.VRS, rhoX=(1 / Xeval),
+                                              rhoY=(1 / Yeval))
+        additive_custom_vrs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_custom_vrs_ref_efficiency[i] = additive_custom_vrs_ref.efficiency()
+
+        additive_ones_crs_ref = DEAAdditive(model=AdditiveModels.Ones, rts=RTS.CSR)
+        additive_ones_crs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_ones_crs_ref_efficiency[i] = additive_ones_crs_ref.efficiency()
+
+        additive_ones_vrs_ref = DEAAdditive(model=AdditiveModels.Ones, rts=RTS.VRS)
+        additive_ones_vrs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_ones_vrs_ref_efficiency[i] = additive_ones_vrs_ref.efficiency()
+
+        additive_mip_crs_ref = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.CSR)
+        additive_mip_crs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_mip_crs_ref_efficiency[i] = additive_mip_crs_ref.efficiency()
+
+        additive_mip_vrs_ref = DEAAdditive(model=AdditiveModels.MIP, rts=RTS.VRS)
+        additive_mip_vrs_ref.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+        additive_mip_vrs_ref_efficiency[i] = additive_mip_vrs_ref.efficiency()
+
+    def test_additive_default_ref(self):
+        self.assertTrue(np.allclose(self.additive_crs_default.efficiency(),
+                                    self.additive_default_crs_ref_efficiency,
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_vrs_default.efficiency(),
+                                    self.additive_default_vrs_ref_efficiency,
+                                    atol=1e-10))
+
+    def test_additive_custom_ref(self):
+        self.assertTrue(np.allclose(self.additive_custom_crs.efficiency(),
+                                    self.additive_custom_crs_ref_efficiency,
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_custom_vrs.efficiency(),
+                                    self.additive_custom_vrs_ref_efficiency,
+                                    atol=1e-10))
+
+    def test_additive_ones_ref(self):
+        self.assertTrue(np.allclose(self.additive_crs_ones.efficiency(),
+                                    self.additive_ones_crs_ref_efficiency,
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_vrs_ones.efficiency(),
+                                    self.additive_ones_vrs_ref_efficiency,
+                                    atol=1e-10))
+
+    def test_additive_mip_ref(self):
+        self.assertTrue(np.allclose(self.additive_mip_crs.efficiency(),
+                                    self.additive_mip_crs_ref_efficiency,
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_mip_vrs.efficiency(),
+                                    self.additive_mip_vrs_ref_efficiency,
+                                    atol=1e-10))
 
     def test_type(self):
 
@@ -566,7 +828,7 @@ class TestDEAAdditive(unittest.TestCase):
             with self.subTest(i=i):
                 self.assertTrue(np.allclose(self.all_models[model].efficiency(),
                                             self.all_models_efficiency[model],
-                                            atol=1e-12))
+                                            atol=1e-10))
 
     def test_slacks_X(self):
 
@@ -579,7 +841,7 @@ class TestDEAAdditive(unittest.TestCase):
                 self.assertTrue(
                     np.allclose(self.all_models[model].slacks(slack=Slack.X),
                                 self.all_models_slacks_X[model],
-                                atol=1e-12))
+                                atol=1e-10))
 
     def test_slacks_Y(self):
 
@@ -592,7 +854,7 @@ class TestDEAAdditive(unittest.TestCase):
                 self.assertTrue(
                     np.allclose(self.all_models[model].slacks(slack=Slack.Y),
                                 self.all_models_slacks_Y[model],
-                                atol=1e-12))
+                                atol=1e-10))
 
     # TODO: Create Peers Abstract class and add peer matrix func to Abstract DEA Class
     # def test_peers_matrix(self):
@@ -612,6 +874,121 @@ class TestDEAAdditive(unittest.TestCase):
     #                 np.allclose(self.all_models[model].weights(),
     #                             self.all_models_weights[model],
     #                             atol=1e-12))
+
+    # ------------------------------------------------------------
+    # TEST - Additive Graph Orient
+    # ------------------------------------------------------------
+
+    X_O = np.array([[1], [2], [3], [2], [4]])
+    Y_O = np.array([[2], [3], [4], [1], [3]])
+
+    # test default orientation which is Graph
+    additive_graph = DEAAdditive(orient=Orient.Graph)
+    additive_graph.fit(X=X_O, Y=Y_O)
+
+    additive_default = DEAAdditive()
+    additive_default.fit(X=X_O, Y=Y_O)
+
+    def test_default_orient(self):
+        self.assertTrue(np.allclose(self.additive_graph.efficiency(),
+                                    self.additive_default.efficiency(),
+                                    atol=1e-10))
+
+    def test_graph_orient(self):
+
+        self.assertTrue(np.allclose(self.additive_graph.efficiency(),
+                                    np.array([[0], [0], [0], [2.0], [2.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_graph.slacks(slack=Slack.X),
+                                    np.array([[0], [0], [0], [0], [1.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_graph.slacks(slack=Slack.Y),
+                                    np.array([[0], [0], [0], [2.0], [1.0]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - Additive Input Orient
+    # ------------------------------------------------------------
+
+    additive_input = DEAAdditive(orient=Orient.Input)
+    additive_input.fit(X=X_O, Y=Y_O)
+
+    def test_input_orient(self):
+
+        self.assertTrue(np.allclose(self.additive_input.efficiency(),
+                                    np.array([[0], [0], [0], [1.0], [2.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_input.slacks(slack=Slack.X),
+                                    np.array([[0], [0], [0], [1.0], [2.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_input.slacks(slack=Slack.Y),
+                                    np.array([[0], [0], [0], [1.0], [0.0]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - Additive Output Orient
+    # ------------------------------------------------------------
+
+    additive_output = DEAAdditive(orient=Orient.Output)
+    additive_output.fit(X=X_O, Y=Y_O)
+
+    def test_output_orient(self):
+
+        self.assertTrue(np.allclose(self.additive_output.efficiency(),
+                                    np.array([[0], [0], [0], [2.0], [1.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_output.slacks(slack=Slack.X),
+                                    np.array([[0], [0], [0], [0.0], [1.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_output.slacks(slack=Slack.Y),
+                                    np.array([[0], [0], [0], [2.0], [1.0]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - Additive Input Orient  - Weak Disposibility
+    # ------------------------------------------------------------
+
+    additive_input_weak = DEAAdditive(orient=Orient.Input, disposY=Dispos.Weak)
+    additive_input_weak.fit(X=X_O, Y=Y_O)
+
+    def test_input_orient_weak(self):
+
+        self.assertTrue(np.allclose(self.additive_input_weak.efficiency(),
+                                    np.array([[0], [0], [0], [0.0], [2.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_input_weak.slacks(slack=Slack.X),
+                                    np.array([[0], [0], [0], [0.0], [2.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_input_weak.slacks(slack=Slack.Y),
+                                    np.array([[0], [0], [0], [0.0], [0.0]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - Additive Output Orient - Weak Disposibility
+    # ------------------------------------------------------------
+
+    additive_output_weak = DEAAdditive(orient=Orient.Output, disposY=Dispos.Weak)
+    additive_output_weak.fit(X=X_O, Y=Y_O)
+
+    def test_output_orient_weak(self):
+
+        self.assertTrue(np.allclose(self.additive_output_weak.efficiency(),
+                                    np.array([[0], [0], [0], [2.0], [0.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_output_weak.slacks(slack=Slack.X),
+                                    np.array([[0], [0], [0], [0.0], [0.0]]),
+                                    atol=1e-10))
+        self.assertTrue(np.allclose(self.additive_output_weak.slacks(slack=Slack.Y),
+                                    np.array([[0], [0], [0], [2.0], [0.0]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - Vector and Matrix Input and Outputs
+    # ------------------------------------------------------------
+
+    # ------------------------------------------------------------
+    # TEST - RAM and BAM with Orientation
+    # ------------------------------------------------------------
 
 
 if __name__ == '__main__':

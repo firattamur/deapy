@@ -101,15 +101,15 @@ class TestDEARadial(unittest.TestCase):
     # ------------------------------------------------------------
 
     # output oriented crs
-    output_crs_radial_dea = DEARadial(orient=Orient.Output, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
-    output_crs_radial_dea.fit(X, Y)
+    output_csr_radial_dea = DEARadial(orient=Orient.Output, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    output_csr_radial_dea.fit(X, Y)
 
-    all_models["output_crs"] = output_crs_radial_dea
-    all_models_type["output_crs"] = DEARadial
-    all_models_ndmu["output_crs"] = 11
-    all_models_ninp["output_crs"] = 2
-    all_models_nout["output_crs"] = 1
-    all_models_efficiency["output_crs"] = np.array([
+    all_models["output_csr"] = output_csr_radial_dea
+    all_models_type["output_csr"] = DEARadial
+    all_models_ndmu["output_csr"] = 11
+    all_models_ninp["output_csr"] = 2
+    all_models_nout["output_csr"] = 1
+    all_models_efficiency["output_csr"] = np.array([
         [1.0000000000],
         [1.6069686410],
         [1.2197260270],
@@ -122,7 +122,7 @@ class TestDEARadial(unittest.TestCase):
         [2.0384615380],
         [1.0000000000]
     ], dtype=np.float64)
-    all_models_slacks_X["output_crs"] = np.array([
+    all_models_slacks_X["output_csr"] = np.array([
         [0.000000000, 0],
         [0.000000000, 0],
         [0.000000000, 0],
@@ -136,9 +136,9 @@ class TestDEARadial(unittest.TestCase):
         [0.000000000, 4]
     ], dtype=np.float64)
 
-    all_models_slacks_Y["output_crs"] = np.zeros((11, 1))
+    all_models_slacks_Y["output_csr"] = np.zeros((11, 1))
 
-    all_models_peersmatrix["output_crs"] = np.array([
+    all_models_peersmatrix["output_csr"] = np.array([
         [1.000000000, 0, 0, 0.0000000000, 0, 0, 0.00000000000, 0, 0, 0, 0],
         [0.000000000, 0, 0, 0.6829268293, 0, 0, 0.17560975610, 0, 0, 0, 0],
         [1.383561644, 0, 0, 0.5342465753, 0, 0, 0.00000000000, 0, 0, 0, 0],
@@ -362,7 +362,7 @@ class TestDEARadial(unittest.TestCase):
     # TODO: Create Peers Abstract class and add peer matrix func to Abstract DEA Class
     # def test_peers_matrix(self):
     #     for model in self.all_models.keys():
-    #         self.assertEqual(self.all_models[model].peermatrixs(), self.all_models_peersmatrix[model])
+    #         self.assertEqual(self.all_models[model].peersmatrix(), self.all_models_peersmatrix[model])
 
     # ------------------------------------------------------------
     # TEST - Test if one-by-one DEA using evaluation and reference sets match initial results
@@ -373,56 +373,54 @@ class TestDEARadial(unittest.TestCase):
         ndmu, ninp = self.X.shape
         _,    nout = self.Y.shape
 
-        io_crs_dea_ref_eff = np.zeros((ndmu, 1))
-        oo_crs_dea_ref_eff = np.zeros((ndmu, 1))
+        io_crs_dea_ref_efficiency = np.zeros((ndmu, 1))
+        oo_crs_dea_ref_efficiency = np.zeros((ndmu, 1))
 
-        io_vrs_dea_ref_eff = np.zeros((ndmu, 1))
-        oo_vrs_dea_ref_eff = np.zeros((ndmu, 1))
+        io_vrs_dea_ref_efficiency = np.zeros((ndmu, 1))
+        oo_vrs_dea_ref_efficiency = np.zeros((ndmu, 1))
 
         io_vrs_dea_ref_slackX = np.zeros(self.X.shape)
         io_vrs_dea_ref_slackY = np.zeros(self.X.shape)
 
-        import pdb
-        pdb.set_trace()
+        Xref = self.X.copy()
+        Yref = self.Y.copy()
 
         for i in range(ndmu):
             Xeval = self.X[i, :].reshape(1, ninp)
             Yeval = self.Y[i, :].reshape(1, nout)
 
             io_crs_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR)
-            io_crs_dea.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
-            io_crs_dea_ref_eff[i] = io_crs_dea.efficiency()
+            io_crs_dea.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+            io_crs_dea_ref_efficiency[i] = io_crs_dea.efficiency()
 
             oo_crs_dea = DEARadial(orient=Orient.Output, rts=RTS.CSR)
-            oo_crs_dea.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
-            oo_crs_dea_ref_eff[i] = oo_crs_dea.efficiency()
+            oo_crs_dea.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+            oo_crs_dea_ref_efficiency[i] = oo_crs_dea.efficiency()
 
             io_vrs_dea = DEARadial(orient=Orient.Input, rts=RTS.VRS)
-            io_vrs_dea.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
-            io_vrs_dea_ref_eff[i] = io_vrs_dea.efficiency()
+            io_vrs_dea.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+            io_vrs_dea_ref_efficiency[i] = io_vrs_dea.efficiency()
 
             oo_vrs_dea = DEARadial(orient=Orient.Output, rts=RTS.VRS)
-            oo_vrs_dea.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
-            oo_vrs_dea_ref_eff[i] = oo_crs_dea.efficiency()
+            oo_vrs_dea.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
+            oo_vrs_dea_ref_efficiency[i] = oo_vrs_dea.efficiency()
 
             io_vrs_dea_slackX = DEARadial(orient=Orient.Input, rts=RTS.VRS)
-            io_vrs_dea_slackX.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
+            io_vrs_dea_slackX.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
             io_vrs_dea_ref_slackX[i] = io_vrs_dea_slackX.slacks(slack=Slack.X)
 
             io_vrs_dea_slackY = DEARadial(orient=Orient.Input, rts=RTS.VRS)
-            io_vrs_dea_slackY.fit(X=Xeval, Y=Yeval, Xref=self.X, Yref=self.Y)
+            io_vrs_dea_slackY.fit(X=Xeval, Y=Yeval, Xref=Xref, Yref=Yref)
             io_vrs_dea_ref_slackY[i] = io_vrs_dea_slackY.slacks(slack=Slack.Y)
 
-        pdb.set_trace()
+        self.assertTrue(np.allclose(io_crs_dea_ref_efficiency, self.all_models["input_csr"].efficiency(), atol=1e-12))
+        self.assertTrue(np.allclose(oo_crs_dea_ref_efficiency, self.all_models["output_csr"].efficiency(), atol=1e-12))
 
-        self.assertTrue(np.allclose(io_crs_dea_ref_eff, self.all_models["input_csr"].efficiency(), atol=1e-12))
-        self.assertTrue(np.allclose(oo_crs_dea_ref_eff, self.all_models["output_csr"].efficiency(), atol=1e-12))
+        self.assertTrue(np.allclose(io_vrs_dea_ref_efficiency, self.all_models["input_vrs"].efficiency(), atol=1e-12))
+        self.assertTrue(np.allclose(oo_vrs_dea_ref_efficiency, self.all_models["output_vrs"].efficiency(), atol=1e-12))
 
-        self.assertTrue(np.allclose(io_vrs_dea_ref_eff, self.all_models["input_vsr"].efficiency(), atol=1e-12))
-        self.assertTrue(np.allclose(oo_vrs_dea_ref_eff, self.all_models["output_vsr"].efficiency(), atol=1e-12))
-
-        self.assertTrue(np.allclose(io_vrs_dea_ref_slackX, self.all_models["input_vsr"].slacks(slack=Slack.X), atol=1e-12))
-        self.assertTrue(np.allclose(io_vrs_dea_ref_slackX, self.all_models["input_vsr"].slacks(slack=Slack.Y), atol=1e-12))
+        self.assertTrue(np.allclose(io_vrs_dea_ref_slackX, self.all_models["input_vrs"].slacks(slack=Slack.X), atol=1e-12))
+        self.assertTrue(np.allclose(io_vrs_dea_ref_slackY, self.all_models["input_vrs"].slacks(slack=Slack.Y), atol=1e-12))
 
 
 if __name__ == '__main__':

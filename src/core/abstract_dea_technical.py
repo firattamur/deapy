@@ -53,7 +53,7 @@ class AbstractDEATechnical(AbstractDEA):
 
         >>> np.allclose(model.efficiency(), result, atol=1e-10)
         True
-        >>> model.dmu()
+        >>> model.ndmu()
         11
 
         Returns

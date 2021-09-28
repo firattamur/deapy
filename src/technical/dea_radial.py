@@ -96,7 +96,7 @@ class DEARadial(AbstractDEATechnical):
             lp_model = pyo.ConcreteModel()
 
             # create set of indices for dmus
-            lp_model.n = pyo.RangeSet(1, n_dmu)
+            lp_model.n = pyo.RangeSet(1, nref_dmu)
 
             # create efficiency and lambda variables for each dmu
             lp_model.eff = pyo.Var(within=pyo.Reals)

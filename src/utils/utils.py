@@ -122,7 +122,7 @@ class TechnicalDEAUtils:
             rhoX = np.zeros(X.shape)
 
             for i in range(m):
-                rhoX[:, i] = 1 / (normalization * (np.max(X[:, i]), np.min(X[:, i])))
+                rhoX[:, i] = 1 / (normalization * (np.max(X[:, i]) - np.min(X[:, i])))
 
             rhoX[np.isinf(rhoX)] = 0
 
@@ -131,7 +131,7 @@ class TechnicalDEAUtils:
             rhoY = np.zeros(Y.shape)
 
             for i in range(s):
-                rhoY[:, i] = 1 / (normalization * (np.max(Y[:, i]), np.min(Y[:, i])))
+                rhoY[:, i] = 1 / (normalization * (np.max(Y[:, i]) - np.min(Y[:, i])))
 
             rhoY[np.isinf(rhoY)] = 0
 
@@ -164,7 +164,7 @@ class TechnicalDEAUtils:
 
             for i in range(m):
                 minX[i, 0] = np.min(X[:, i])
-                rhoX[:, i] = 1 / (normalization * X[:, i] - minX[i, 0])
+                rhoX[:, i] = 1 / (normalization * (X[:, i] - minX[i, 0]))
 
             rhoX[np.isinf(rhoX)] = 0
 
@@ -174,8 +174,8 @@ class TechnicalDEAUtils:
             maxY = np.zeros((s, 1))
 
             for i in range(s):
-                maxY[i, 0] = np.maximum(Y[:, i])
-                rhoY = 1 / (normalization * (maxY[i, 0] - Y[:, i]))
+                maxY[i, 0] = np.max(Y[:, i])
+                rhoY[:, i] = 1 / (normalization * (maxY[i, 0] - Y[:, i]))
 
             rhoY[np.isinf(rhoY)] = 0
 
