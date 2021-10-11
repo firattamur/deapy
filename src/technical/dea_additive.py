@@ -1,4 +1,3 @@
-import warnings
 from tqdm import tqdm
 
 import numpy as np
@@ -8,6 +7,7 @@ from prettytable import PrettyTable
 
 from typing import List
 from nptyping import NDArray
+
 
 from src.utils.symbols import *
 from src.optimizer.dea_optimizer import DEAOptimizer
@@ -61,7 +61,6 @@ class DEAAdditive(AbstractDEATechnical):
 
         super(AbstractDEATechnical).__init__()
 
-    # TODO: Keep dea function without any arguments.
     def dea(self):
         super(DEAAdditive, self).dea()
 
@@ -108,8 +107,8 @@ class DEAAdditive(AbstractDEATechnical):
         nref = nxref
 
         effi = np.zeros((n, 1))
-        slackX = np.zeros((n, self.n_inp))
-        slackY = np.zeros((n, self.n_out))
+        slackX = np.zeros((n, self.ninp()))
+        slackY = np.zeros((n, self.nout()))
         lambdaeff = sparse.csr_matrix((n, nref)).toarray()
 
         for i in tqdm(range(n)):
@@ -132,8 +131,8 @@ class DEAAdditive(AbstractDEATechnical):
 
             # create set of indices for inputs and outputs
             lp_model.dmu = pyo.RangeSet(1, nref)
-            lp_model.inp = pyo.RangeSet(1, mref)
-            lp_model.out = pyo.RangeSet(1, sref)
+            lp_model.inp = pyo.RangeSet(1, self.ninp())
+            lp_model.out = pyo.RangeSet(1, self.nout())
 
             # create variables for slackX, slackY and lambdas
             lp_model.sX = pyo.Var(lp_model.inp, within=pyo.NonNegativeReals)
@@ -164,13 +163,13 @@ class DEAAdditive(AbstractDEATechnical):
 
             lp_model.constraints = pyo.ConstraintList()
 
-            for j in range(self.n_inp):
+            for j in range(self.ninp()):
                 lhs = sum(self.Xref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                 rhs = x0[j] - lp_model.sX[j + 1]
 
                 lp_model.constraints.add(expr=(lhs == rhs))
 
-            for j in range(self.n_out):
+            for j in range(self.nout()):
                 lhs = sum(self.Yref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                 rhs = y0[j] + lp_model.sY[j + 1]
 
@@ -183,13 +182,13 @@ class DEAAdditive(AbstractDEATechnical):
                 # add constants for BAM CSR model
                 if self.model == AdditiveModels.BAM:
 
-                    for j in range(self.n_inp):
+                    for j in range(self.ninp()):
                         lhs = sum(self.Xref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                         rhs = minXref[j]
 
                         lp_model.constraints.add(expr=(lhs >= rhs))
 
-                    for j in range(self.n_out):
+                    for j in range(self.nout()):
                         lhs = sum(self.Yref[t - 1, j] * lp_model.lambdas[t] for t in lp_model.dmu)
                         rhs = maxYref[j]
 
@@ -202,22 +201,21 @@ class DEAAdditive(AbstractDEATechnical):
 
             # fix values of slacks when weight are zero
 
-            for j in range(self.n_inp):
+            for j in range(self.ninp()):
                 if rhoX0[j] == 0:
                     lp_model.sX[j + 1].fix(0)
 
-            for j in range(self.n_out):
+            for j in range(self.nout()):
                 if rhoY0[j] == 0:
                     lp_model.sY[j + 1].fix(0)
-
-            # results, lp_model = PyomoUtils.solve_pyomo_model(model=lp_model, optimizer=self.optimizer)
 
             # TODO: Refactor solve function in utils.
             opt = pyo.SolverFactory("glpk")
             results = opt.solve(lp_model)
 
-            if results.solver.termination_condition != pyo.TerminationCondition.optimal and results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
-                pass
+            if results.solver.termination_condition != pyo.TerminationCondition.optimal and \
+                    results.solver.termination_condition != pyo.TerminationCondition.locallyOptimal:
+                continue
 
             effi[i, :] = pyo.value(lp_model.obj)
 
@@ -269,9 +267,10 @@ class DEAAdditive(AbstractDEATechnical):
         print("Additive DEA Model")
         print(f"DMUs = {self.ndmu()}", end="; ")
         print(f"Inputs = {self.ninp()}", end="; ")
-        print(f"Ouputs = {self.nout()}")
+        print(f"Outputs = {self.nout()}")
         print(f"Orientation = {self.orient.value}", end="; ")
         print(f"Returns to scale = {self.rts.value}")
+        print(f"Weights = {self.model.value}")
 
         if self.disposX == Dispos.Weak:
             print(f"Weak disposibility of inputs ")
@@ -279,9 +278,8 @@ class DEAAdditive(AbstractDEATechnical):
         if self.disposY == Dispos.Weak:
             print(f"Weak disposibility of outputs")
 
-        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in
-                                                                                            range(self.slackY.shape[1])]
-        t = PrettyTable(cols)
+        cols = ["DMU", "Efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in range(self.slackY.shape[1])]
+        table = PrettyTable(cols)
 
         for i in range(self.n_dmu):
             row = [i + 1, self.eff[i, 0]]
@@ -292,17 +290,10 @@ class DEAAdditive(AbstractDEATechnical):
             for sy in range(self.slackY.shape[1]):
                 row.append(self.slackY[i, sy])
 
-            t.add_row(row)
+            table.add_row(row)
 
-        print(t)
+        print(table)
 
 
-if __name__ == '__main__':
-    X = np.array(
-        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
-    Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
-    additive_dea = DEAAdditive(model=AdditiveModels.MIP)
-    additive_dea.fit(X, Y)
 
-    additive_dea.pprint()

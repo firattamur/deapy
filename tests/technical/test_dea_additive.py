@@ -26,7 +26,8 @@ class TestDEAAdditive(unittest.TestCase):
 
     # test data
 
-    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    X = np.array(
+        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
     Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
 
     def test_inputs(self):
@@ -687,7 +688,7 @@ class TestDEAAdditive(unittest.TestCase):
     # ------------------------------------------------------------
 
     ndmu, ninp = X.shape
-    _,    nout = Y.shape
+    _, nout = Y.shape
 
     additive_default_crs_ref_efficiency = np.zeros((ndmu, 1))
     additive_default_vrs_ref_efficiency = np.zeros((ndmu, 1))
@@ -705,7 +706,6 @@ class TestDEAAdditive(unittest.TestCase):
     Yref = Y.copy()
 
     for i in range(ndmu):
-
         Xeval = X[i, :]
         Xeval = Xeval.reshape(1, ninp)
 
@@ -894,16 +894,18 @@ class TestDEAAdditive(unittest.TestCase):
                                     self.additive_default.efficiency(),
                                     atol=1e-10))
 
+    # there test are different from original package because of multiple optimization solution
+    # can be occurred from solver.
     def test_graph_orient(self):
 
         self.assertTrue(np.allclose(self.additive_graph.efficiency(),
                                     np.array([[0], [0], [0], [2.0], [2.0]]),
                                     atol=1e-10))
         self.assertTrue(np.allclose(self.additive_graph.slacks(slack=Slack.X),
-                                    np.array([[0], [0], [0], [0], [1.0]]),
+                                    np.array([[0], [0], [0], [1.0], [2.0]]),
                                     atol=1e-10))
         self.assertTrue(np.allclose(self.additive_graph.slacks(slack=Slack.Y),
-                                    np.array([[0], [0], [0], [2.0], [1.0]]),
+                                    np.array([[0], [0], [0], [1.0], [0.0]]),
                                     atol=1e-10))
 
     # ------------------------------------------------------------
@@ -967,7 +969,7 @@ class TestDEAAdditive(unittest.TestCase):
     # TEST - Additive Output Orient - Weak Disposibility
     # ------------------------------------------------------------
 
-    additive_output_weak = DEAAdditive(orient=Orient.Output, disposY=Dispos.Weak)
+    additive_output_weak = DEAAdditive(orient=Orient.Output, disposX=Dispos.Weak)
     additive_output_weak.fit(X=X_O, Y=Y_O)
 
     def test_output_orient_weak(self):
@@ -986,9 +988,98 @@ class TestDEAAdditive(unittest.TestCase):
     # TEST - Vector and Matrix Input and Outputs
     # ------------------------------------------------------------
 
+    # input as matrix, output as vector
+    X_MV = np.array([[2, 2], [1, 4], [4, 1], [4, 3], [5, 5], [6, 1], [2, 5], [1.6, 8]])
+    Y_MV = np.array([[1], [1], [1], [1], [1], [1], [1], [1]])
+
+    additive_ones_matrix_vector = DEAAdditive(model=AdditiveModels.Ones)
+    additive_ones_matrix_vector.fit(X_MV, Y_MV)
+
+    def test_input_matrix_output_vector(self):
+
+        self.assertTrue(np.allclose(self.additive_ones_matrix_vector.efficiency(),
+                                    np.array([[0.0], [0.0], [0.0], [3.0], [6.0], [2.0], [3.0], [5.2]]),
+                                    atol=1e-10))
+
+    # input as vector, output as matrix
+    X_VM = np.array([[1], [1], [1], [1], [1], [1], [1], [1]])
+    Y_VM = np.array([[7, 7], [4, 8], [8, 4], [3, 5], [3, 3], [8, 2], [6, 4], [1.5, 5]])
+
+    additive_ones_vector_matrix = DEAAdditive(model=AdditiveModels.Ones)
+    additive_ones_vector_matrix.fit(X_VM, Y_VM)
+
+    def test_input_vector_output_matrix(self):
+
+        self.assertTrue(np.allclose(self.additive_ones_vector_matrix.efficiency(),
+                                    np.array([[0.0], [0.0], [0.0], [6.0], [8.0], [2.0], [4.0], [7.5]]),
+                                    atol=1e-10))
+
+    # input as vector, output as vector
+    X_VV = np.array([[2], [4], [8], [12], [6], [14], [14], [9.412]])
+    Y_VV = np.array([[1], [5], [8], [9], [3], [7], [9], [2.353]])
+
+    additive_ones_vector_vector = DEAAdditive(model=AdditiveModels.Ones)
+    additive_ones_vector_vector.fit(X_VV, Y_VV)
+
+    def test_input_vector_output_vector(self):
+
+        self.assertTrue(np.allclose(self.additive_ones_vector_vector.efficiency(),
+                                    np.array([[0.0], [0.0], [0.0], [0.0], [4.0], [7.33333333], [2.0], [8.059]]),
+                                    atol=1e-10))
+
     # ------------------------------------------------------------
-    # TEST - RAM and BAM with Orientation
+    # TEST - RAM with Different Orientations
     # ------------------------------------------------------------
+
+    additive_ram_graph = DEAAdditive(model=AdditiveModels.RAM, orient=Orient.Graph)
+    additive_ram_graph.fit(X=X_O, Y=Y_O)
+
+    additive_ram_input = DEAAdditive(model=AdditiveModels.RAM, orient=Orient.Input)
+    additive_ram_input.fit(X=X_O, Y=Y_O)
+
+    additive_ram_output = DEAAdditive(model=AdditiveModels.RAM, orient=Orient.Output)
+    additive_ram_output.fit(X=X_O, Y=Y_O)
+
+    def test_ram_orientations(self):
+
+        self.assertTrue(np.allclose(self.additive_ram_graph.efficiency(),
+                                    np.array([[0], [0], [0], [1 / 3], [1 / 3]]),
+                                    atol=1e-10))
+
+        self.assertTrue(np.allclose(self.additive_ram_input.efficiency(),
+                                    np.array([[0], [0], [0], [1 / 3], [2 / 3]]),
+                                    atol=1e-10))
+
+        self.assertTrue(np.allclose(self.additive_ram_output.efficiency(),
+                                    np.array([[0], [0], [0], [2 / 3], [1 / 3]]),
+                                    atol=1e-10))
+
+    # ------------------------------------------------------------
+    # TEST - BAM with Different Orientations
+    # ------------------------------------------------------------
+
+    additive_bam_graph = DEAAdditive(model=AdditiveModels.BAM, orient=Orient.Graph)
+    additive_bam_graph.fit(X=X_O, Y=Y_O)
+
+    additive_bam_input = DEAAdditive(model=AdditiveModels.BAM, orient=Orient.Input)
+    additive_bam_input.fit(X=X_O, Y=Y_O)
+
+    additive_bam_output = DEAAdditive(model=AdditiveModels.BAM, orient=Orient.Output)
+    additive_bam_output.fit(X=X_O, Y=Y_O)
+
+    def test_bam_orientations(self):
+
+        self.assertTrue(np.allclose(self.additive_bam_graph.efficiency(),
+                                    np.array([[0], [0], [0], [2 / 3], [2 / 3]]),
+                                    atol=1e-10))
+
+        self.assertTrue(np.allclose(self.additive_bam_input.efficiency(),
+                                    np.array([[0], [0], [0], [1], [2 / 3]]),
+                                    atol=1e-10))
+
+        self.assertTrue(np.allclose(self.additive_bam_output.efficiency(),
+                                    np.array([[0], [0], [0], [2 / 3], [1]]),
+                                    atol=1e-10))
 
 
 if __name__ == '__main__':

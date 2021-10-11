@@ -297,12 +297,3 @@ class DEARadial(AbstractDEATechnical):
 
         print(t)
 
-
-if __name__ == '__main__':
-    X = np.array(
-        [[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
-    Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
-
-    input_crs_radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
-    input_crs_radial_dea.fit(X, Y)
-    input_crs_radial_dea.pprint()
