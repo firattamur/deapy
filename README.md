@@ -26,7 +26,7 @@
 
 </p>
 
-![DataEnvelopmentAnalysis logo](assets/logo/logo.png "DataEnvelopmentAnalysis logo")
+![](https://github.com/firattamur/dea-py/blob/master/assets/logo/logo.png)
 
 <!-- | Documentation | Build Status      | Coverage    | Zenodo      |
 |:-------------:|:-----------------:|:-----------:|:-----------:|

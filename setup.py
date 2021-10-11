@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="dea-py",
-    version="0.0.1",
+    version="0.0.2",
     author="firat tamur",
     author_email="ftamur16@ku.edu.tr",
     description="A Python Package for Data Envelopment Analysis.",
