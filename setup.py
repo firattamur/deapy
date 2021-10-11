@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="dea",
+    name="dea-py",
     version="0.0.1",
     author="firat tamur",
     author_email="ftamur16@ku.edu.tr",
