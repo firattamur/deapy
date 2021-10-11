@@ -1,5 +1,5 @@
-from src.core.abstract_dea_optimizer import AbstractDEAOptimizer
-from src.utils.symbols import Optimizer
+from dea.core.abstract_dea_optimizer import AbstractDEAOptimizer
+from dea.utils.symbols import Optimizer
 
 
 class DEAOptimizer(AbstractDEAOptimizer):

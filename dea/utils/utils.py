@@ -1,8 +1,8 @@
 import numpy as np
 import pyomo.environ as pyo
 from nptyping import NDArray
-from src.utils.symbols import *
-from src.optimizer.dea_optimizer import DEAOptimizer
+from dea.utils.symbols import *
+from dea.optimizer.dea_optimizer import DEAOptimizer
 
 
 class PyomoUtils:

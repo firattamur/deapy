@@ -10,9 +10,9 @@ import numpy as np
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from src.utils.symbols import *
-from src.technical.dea_radial import DEARadial
-from src.core.abstract_dea_technical import AbstractDEATechnical
+from dea.utils.symbols import *
+from dea.technical.dea_radial import DEARadial
+from dea.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class TestDEARadial(unittest.TestCase):
