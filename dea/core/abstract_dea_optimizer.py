@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.utils.symbols import Optimizer
+from dea.utils.symbols import Optimizer
 
 
 class AbstractDEAOptimizer(ABC):

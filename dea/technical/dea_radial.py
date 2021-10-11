@@ -10,11 +10,11 @@ from nptyping import NDArray
 # TODO: Handle module imports in another way if it is possible
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from src.utils.symbols import *
-from src.utils.utils import PyomoUtils
-from src.technical.dea_additive import DEAAdditive
-from src.optimizer.dea_optimizer import DEAOptimizer
-from src.core.abstract_dea_technical import AbstractDEATechnical
+from dea.utils.symbols import *
+from dea.utils.utils import PyomoUtils
+from dea.technical.dea_additive import DEAAdditive
+from dea.optimizer.dea_optimizer import DEAOptimizer
+from dea.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class DEARadial(AbstractDEATechnical):
