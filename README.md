@@ -55,8 +55,6 @@ pip install dea-py
 
 ### Technical Efficiency DEA Models:
 
-- [X] Radial Input and Output Oriented Model
-
 ```python
 radio_dea = RadialDEA()
 
@@ -70,7 +68,6 @@ radio_dea.pprint()
 
 ```
 
-- [ ] Directional Distance Function Model
 - [X] Additive Models: 
 
 	```python
@@ -114,29 +111,8 @@ radio_dea.pprint()
 	 additive_dea.pprint()
 	```
 
-- [ ] Generalized Distance Function Model
-- [ ] Russell Graph and Oriented Model
-- [ ] Enhanced Russell Graph Slack Based Measure Model
-- [ ] Modified Directional Distance function Model
-- [ ] Hölder Distance Function Model
-- [ ] Reverse Directional Distance Function Model
-
 <hr>
 
-### Economic Efficiency DEA Models:
-
-- [ ] Cost Model
-- [ ] Revenue Model
-- [ ] Profit Model
-- [ ] Profitability Model
-
-<hr>
-
-### Productivity Change DEA Models:
-
-- [ ] Mamlmquist Index Model.
-
-<hr>
 
 ## Authors
 

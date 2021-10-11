@@ -9,10 +9,10 @@ from typing import List
 from nptyping import NDArray
 
 
-from src.utils.symbols import *
-from src.optimizer.dea_optimizer import DEAOptimizer
-from src.utils.utils import PyomoUtils, TechnicalDEAUtils
-from src.core.abstract_dea_technical import AbstractDEATechnical
+from dea.utils.symbols import *
+from dea.optimizer.dea_optimizer import DEAOptimizer
+from dea.utils.utils import PyomoUtils, TechnicalDEAUtils
+from dea.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class DEAAdditive(AbstractDEATechnical):
