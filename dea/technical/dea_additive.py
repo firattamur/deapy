@@ -1,3 +1,5 @@
+import os
+import sys
 from tqdm import tqdm
 
 import numpy as np
@@ -8,6 +10,8 @@ from prettytable import PrettyTable
 from typing import List
 from nptyping import NDArray
 
+# TODO: Handle module imports in another way if it is possible
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
 from dea.utils.symbols import *
 from dea.optimizer.dea_optimizer import DEAOptimizer
@@ -282,18 +286,25 @@ class DEAAdditive(AbstractDEATechnical):
         table = PrettyTable(cols)
 
         for i in range(self.n_dmu):
-            row = [i + 1, self.eff[i, 0]]
+            row = [i + 1, f"{self.eff[i, 0]:.2f}"]
 
             for sx in range(self.slackX.shape[1]):
-                row.append(self.slackX[i, sx])
+                row.append(f"{abs(self.slackX[i, sx]):.2f}")
 
             for sy in range(self.slackY.shape[1]):
-                row.append(self.slackY[i, sy])
+                row.append(f"{abs(self.slackY[i, sy]):.2f}")
 
             table.add_row(row)
 
         print(table)
 
 
+if __name__ == '__main__':
 
+    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
+
+    additive_dea = DEAAdditive(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong)
+    additive_dea.fit(X, Y)
+    additive_dea.pprint()
 

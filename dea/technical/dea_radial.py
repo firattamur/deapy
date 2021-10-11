@@ -280,20 +280,29 @@ class DEARadial(AbstractDEATechnical):
             print(f"Weak disposibility of outputs")
 
         from prettytable import PrettyTable
-        cols = ["", "efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in
+        cols = ["DMU", "Efficiency"] + [f"Slack X{i}" for i in range(self.slackX.shape[1])] + [f"Slack Y{i}" for i in
                                                                                             range(self.slackY.shape[1])]
         t = PrettyTable(cols)
 
         for i in range(self.n_dmu):
-            row = [i + 1, self.eff[i, 0]]
+            row = [i + 1, f"{self.eff[i, 0]:.2f}"]
 
             for sx in range(self.slackX.shape[1]):
-                row.append(self.slackX[i, sx])
+                row.append(f"{abs(self.slackX[i, sx]):.2f}")
 
             for sy in range(self.slackY.shape[1]):
-                row.append(self.slackY[i, sy])
+                row.append(f"{abs(self.slackY[i, sy]):.2f}")
 
             t.add_row(row)
 
         print(t)
 
+
+if __name__ == '__main__':
+
+    X = np.array([[5, 13], [16, 12], [16, 26], [17, 15], [18, 14], [23, 6], [25, 10], [27, 22], [37, 14], [42, 25], [5, 17]])
+    Y = np.array([[12], [14], [25], [26], [8], [9], [27], [30], [31], [26], [12]])
+
+    radial_dea = DEARadial(orient=Orient.Input, rts=RTS.CSR, disposX=Dispos.Strong, disposY=Dispos.Strong)
+    radial_dea.fit(X, Y)
+    radial_dea.pprint()
