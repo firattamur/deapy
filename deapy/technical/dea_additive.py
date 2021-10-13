@@ -1,23 +1,18 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-
 from tqdm import tqdm
 
 import numpy as np
-from scipy import sparse
 import pyomo.environ as pyo
+
+from scipy import sparse
 from prettytable import PrettyTable
 
 from typing import List
 from nptyping import NDArray
 
-
-from utils.enums import *
-from optimizer.dea_optimizer import DEAOptimizer
-from utils.common import PyomoUtils, TechnicalDEAUtils
-from core.abstract_dea_technical import AbstractDEATechnical
+from deapy.utils.enums import *
+from deapy.optimizer import DEAOptimizer
+from deapy.utils.common import PyomoUtils, TechnicalDEAUtils
+from deapy.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class DEAAdditive(AbstractDEATechnical):

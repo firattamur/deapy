@@ -1,10 +1,5 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-
-from core.abstract_dea_optimizer import AbstractDEAOptimizer
-from utils.enums import Optimizer
+from deapy.core.abstract_dea_optimizer import AbstractDEAOptimizer
+from deapy.utils.enums import Optimizer
 
 
 class DEAOptimizer(AbstractDEAOptimizer):

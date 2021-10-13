@@ -1,2 +1,2 @@
-from deapy.technical.dea_additive import DEAAdditive
-from deapy.technical.dea_radial import DEARadial
+from deapy.technical.dea_additive import *
+from deapy.technical.dea_radial import *

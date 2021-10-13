@@ -3,8 +3,8 @@ import pyomo.environ as pyo
 
 from nptyping import NDArray
 
-from utils.enums import *
-from optimizer.dea_optimizer import DEAOptimizer
+from deapy.utils.enums import *
+from deapy.optimizer import DEAOptimizer
 
 
 class PyomoUtils:

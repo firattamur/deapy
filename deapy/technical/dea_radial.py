@@ -4,16 +4,16 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 import numpy as np
+import pyomo.environ as pyo
+
 from typing import List
 from scipy import sparse
-import pyomo.environ as pyo
 from nptyping import NDArray
 
-
-from utils.enums import *
-from technical.dea_additive import DEAAdditive
-from optimizer.dea_optimizer import DEAOptimizer
-from core.abstract_dea_technical import AbstractDEATechnical
+from deapy.utils.enums import *
+from deapy.technical import DEAAdditive
+from deapy.optimizer.dea_optimizer import DEAOptimizer
+from deapy.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class DEARadial(AbstractDEATechnical):

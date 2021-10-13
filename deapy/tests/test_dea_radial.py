@@ -1,8 +1,3 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-
 import unittest
 
 from typing import Dict
@@ -10,9 +5,9 @@ from nptyping import NDArray
 
 import numpy as np
 
-from utils.enums import *
-from technical.dea_radial import DEARadial
-from core.abstract_dea_technical import AbstractDEATechnical
+from deapy.utils.enums import *
+from deapy.technical.dea_radial import DEARadial
+from deapy.core.abstract_dea_technical import AbstractDEATechnical
 
 
 class TestDEARadial(unittest.TestCase):
