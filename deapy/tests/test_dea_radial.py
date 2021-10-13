@@ -1,5 +1,8 @@
 import os
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 import unittest
 
 from typing import Dict
@@ -7,12 +10,9 @@ from nptyping import NDArray
 
 import numpy as np
 
-# TODO: Handle module imports in another way if it is possible
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
-
-from dea.utils.symbols import *
-from dea.technical.dea_radial import DEARadial
-from dea.core.abstract_dea_technical import AbstractDEATechnical
+from utils.enums import *
+from technical.dea_radial import DEARadial
+from core.abstract_dea_technical import AbstractDEATechnical
 
 
 class TestDEARadial(unittest.TestCase):

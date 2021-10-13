@@ -1,5 +1,10 @@
-from dea.core.abstract_dea_optimizer import AbstractDEAOptimizer
-from dea.utils.symbols import Optimizer
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+from core.abstract_dea_optimizer import AbstractDEAOptimizer
+from utils.enums import Optimizer
 
 
 class DEAOptimizer(AbstractDEAOptimizer):

@@ -1,8 +1,11 @@
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 from abc import ABC, abstractmethod
 from nptyping import NDArray
 from typing import List
-import numpy as np
-import warnings
 
 
 class AbstractDEA(ABC):

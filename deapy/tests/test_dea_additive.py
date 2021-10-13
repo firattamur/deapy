@@ -1,22 +1,17 @@
 import os
 import sys
-import unittest
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+import unittest
 import numpy as np
 
 from typing import Dict
 from nptyping import NDArray
 
-import warnings
-
-warnings.filterwarnings("ignore")
-
-# TODO: Handle module imports in another way if it is possible
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
-
-from dea.utils.symbols import *
-from dea.technical.dea_radial import DEAAdditive
-from dea.core.abstract_dea_technical import AbstractDEATechnical
+from utils.enums import *
+from technical.dea_radial import DEAAdditive
+from core.abstract_dea_technical import AbstractDEATechnical
 
 
 class TestDEAAdditive(unittest.TestCase):

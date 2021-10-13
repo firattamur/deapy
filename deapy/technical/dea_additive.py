@@ -1,5 +1,8 @@
 import os
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 from tqdm import tqdm
 
 import numpy as np
@@ -10,13 +13,11 @@ from prettytable import PrettyTable
 from typing import List
 from nptyping import NDArray
 
-# TODO: Handle module imports in another way if it is possible
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 
-from dea.utils.symbols import *
-from dea.optimizer.dea_optimizer import DEAOptimizer
-from dea.utils.utils import PyomoUtils, TechnicalDEAUtils
-from dea.core.abstract_dea_technical import AbstractDEATechnical
+from utils.enums import *
+from optimizer.dea_optimizer import DEAOptimizer
+from utils.common import PyomoUtils, TechnicalDEAUtils
+from core.abstract_dea_technical import AbstractDEATechnical
 
 
 class DEAAdditive(AbstractDEATechnical):

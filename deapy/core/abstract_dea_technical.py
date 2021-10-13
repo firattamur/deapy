@@ -1,8 +1,9 @@
+
+
 from abc import abstractmethod
-from dea.utils.symbols import *
-from dea.core.abstract_dea import AbstractDEA
+from utils.enums import *
+from core.abstract_dea import AbstractDEA
 from nptyping import NDArray
-import numpy as np
 
 
 class AbstractDEATechnical(AbstractDEA):

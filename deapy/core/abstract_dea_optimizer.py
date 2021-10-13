@@ -1,5 +1,10 @@
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 from abc import ABC, abstractmethod
-from dea.utils.symbols import Optimizer
+from utils.enums import Optimizer
 
 
 class AbstractDEAOptimizer(ABC):
